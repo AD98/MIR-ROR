@@ -6,6 +6,8 @@ def get_note(rand_num, next_notes):
   sum_freq = 0.0
   for j in range(len(next_notes)):
     sum_freq += next_notes[j]
+  if (sum_freq == 0):
+    return None
   num = 0.0
   for j in range(len(next_notes)):
     frac = (next_notes[j]/sum_freq)*100
@@ -16,12 +18,11 @@ def get_note(rand_num, next_notes):
 def to_stream(song):
   ret = stream.Stream()
   for i in range(len(song)):
-    n = note.Note()
-    n.pitch.midi = song[i] % 128
+    new_note = note.Note()
+    new_note.pitch.midi = song[i] % 128
     ql = int(song[i] / 128);
-    n.quarterLength = get_dur(ql)
-    #n.quarterLength = my_notes[i % len(my_notes)].quarterLength
-    ret.append(n)
+    new_note.quarterLength = get_dur(ql)
+    ret.append(new_note)
   return ret
 
 def get_ql(n):
@@ -48,52 +49,56 @@ def get_dur(num):
 
 
 # load in a random monophonic piece from corpus
-bundle = corpus.search(1, 'numberOfParts')#[0].parse()
+# bundle = corpus.search(1, 'numberOfParts')
+#bundle = corpus.search('bach','composer')
 
-mat1 = np.zeros((128*5,128*5))
-mat2 = np.zeros((128*5,128*5,128*5))
+mat2 = np.zeros((640, 640, 640*640))
 my_notes = None
 
-for j in range(8):
-  orig = bundle[j].parse()
-  print("Title: ",orig.metadata.title)
+knaan = converter.parse('/Users/anshuldoshi/Desktop/hbd.mid')
+#waka = converter.parse('/Users/anshuldoshi/Desktop/waka_waka.mid')
+fourfive = converter.parse('/Users/anshuldoshi/Desktop/twinkle.mid')
+#wire = converter.parse('/Users/anshuldoshi/Desktop/wire.mid')
+# songs = [knaan, waka, fourfive, wire]
+songs = [knaan, fourfive]
+
+#for j in range(8):
+ # orig = bundle[j].parse()
+  #print("Title: ",orig.metadata.title)
+for orig in songs:
 
   # flatten stream
   my_notes = orig.flat.notes
 
-  # initialize and fill in frequency matrix
-  for i in range (1, len(my_notes)):
+  # initialize and fill in frequency matrix ********* fix this to fill in matrix of 640^2 instead of 640
+  for i in range (1, len(my_notes) - 1):
+    if (my_notes[i+1].pitch is None) or (my_notes[i].pitch is None) or (my_notes[i-1].pitch is None) or (my_notes[i-2].pitch is None):
+      continue
+    ql_neg1 = get_ql(my_notes[i+1])
     ql_0 = get_ql(my_notes[i])
     ql_1 = get_ql(my_notes[i-1])
-    mat1[128*ql_1 + my_notes[i-1].pitch.midi][128*ql_0 + my_notes[i].pitch.midi] += 1
-    if (i > 1):
-      ql_2 = get_ql(my_notes[i-2])
-      mat2[128*ql_2 + my_notes[i-2].pitch.midi][128*ql_1 + my_notes[i-1].pitch.midi][128*ql_0 + my_notes[i].pitch.midi] += 1
-
-#print(mat)
+    ql_2 = get_ql(my_notes[i-2])
+    mat2[128*ql_2 + my_notes[i-2].pitch.midi][128*ql_1 + my_notes[i-1].pitch.midi][(128*ql_0 + my_notes[i].pitch.midi)*640 + (128*ql_neg1 + my_notes[i+1].pitch.midi)] += 1
 
 # set first note(s) in generated song to first note in original song
-song1 = [128*get_ql(my_notes[0]) + my_notes[0].pitch.midi] 
 song2 = [128*get_ql(my_notes[0]) + my_notes[0].pitch.midi, 128*get_ql(my_notes[1]) + my_notes[1].pitch.midi]
 
 # generate song
-for i in range (len(my_notes)):
+for i in range (1, len(my_notes)):
   rand_num = np.random.randint(0,100)
-  next_notes = mat1[song1[i]]
-  song1.append(get_note(rand_num, next_notes))
-  if (i > 0):
-    next_notes = mat2[song2[i-1]][song2[i]]
-    song2.append(get_note(rand_num, next_notes))
-
-#print(song)
+  next_notes = mat2[song2[i-1]][song2[i]]
+  double_note = get_note(rand_num, next_notes)
+  if double_note is None:
+    continue
+  song2.append(int(double_note/640))
+  song2.append(double_note % 640)
 
 # convert list to stream
-stream1 = to_stream(song1)
 stream2 = to_stream(song2)
 
 
-#orig.show()
-#orig.write('midi', fp='orig_song_2.mid')
-stream1.show('midi')
-#s.write('midi', fp='gen_song_2.mid')
-stream2.show('midi')
+# orig.show()
+# orig.write('midi', fp='orig_song_2.mid')
+# stream1.show('midi')
+stream2.show()
+# stream2.write('midi', fp='gen2_song_2.mid')
