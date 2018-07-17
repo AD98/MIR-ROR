@@ -1,6 +1,12 @@
 from music21 import *
 import numpy as np
 
+markov_order = 1
+elements = 129 # all possible midi notes +1 for rests
+durations = 1 # all durations we are considering (whole, half, quarter, eighth, sixteenth)
+all_elem = elements*durations
+num_parts = 2 # number of parts in the songs (different instruments)
+all_possible = np.power(all_elem, num_parts) # all possible states
 
 def get_note(rand_num, next_notes):
   sum_freq = 0.0
@@ -17,13 +23,26 @@ def get_note(rand_num, next_notes):
 
 def to_stream(song):
   ret = stream.Stream()
+
+  for i in range(num_parts):
+    ret.append(stream.Part())
+
   for i in range(len(song)):
-    new_note = note.Note()
-    new_note.pitch.midi = song[i] % 128
-    ql = int(song[i] / 128);
-    new_note.quarterLength = get_dur(ql)
-    ret.append(new_note)
+    num = song[i]
+    for j in range(num_parts):
+      ret[j].append(to_note(num % all_elements))
+      num = int(num/all_elements)
   return ret
+
+def to_note(num):
+  if (num % elements == elements-1):
+    new_note = note.Rest()
+  else:
+    new_note = note.Note()
+    new_note.pitch.midi = num % elements
+
+  new_note.quarterLength = get_dur(int(num / elements))
+  return new_note
 
 def get_ql(n):
   if (n.quarterLength >= 4):
@@ -47,41 +66,62 @@ def get_dur(num):
     return 0.5
   return 0.25
 
+def note_to_num(song_notes):
+  ret = []
+  for n in song_notes:
+    if (isinstance(n, note.Note)):
+      ret.append(elements*get_ql(n) + n.pitch.midi)
+    elif (isinstance(n, chord.Chord)):
+      if (len(n.pitches) == 0):
+        ret.append(elements*get_ql(n.duration) + elements-1)
+        continue
+      new_note = note.Note()
+      new_note.pitch = n.pitches[0]
+      ret.append(elements*get_ql(n.duration) + new_note.pitch.midi)
+    elif (isinstance(n, note.Rest)):
+      ret.append(elements*get_ql(n.duration) + elements-1)
+    else:
+      print("My error: ",type(n))
+  return ret
+
+def merge_parts(my_parts):
+  ret = []
+  for i in range(len(my_parts[0])):
+    to_app = 0
+    for j in range(num_parts):
+      to_app += np.power(all_elem,j) * my_parts[j][i]
+    ret.append(to_app)
+  return ret
 
 # load in a random monophonic piece from corpus
-# bundle = corpus.search(1, 'numberOfParts')
-#bundle = corpus.search('bach','composer')
+bundle = corpus.search(num_parts, 'numberOfParts')
 
-mat2 = np.zeros((640, 640, 640*640))
+mat2 = np.zeros((all_possible, all_possible, np.power(all_possible, markov_order)))
 my_notes = None
 
-knaan = converter.parse('/Users/anshuldoshi/Desktop/hbd.mid')
-#waka = converter.parse('/Users/anshuldoshi/Desktop/waka_waka.mid')
-fourfive = converter.parse('/Users/anshuldoshi/Desktop/twinkle.mid')
-#wire = converter.parse('/Users/anshuldoshi/Desktop/wire.mid')
-# songs = [knaan, waka, fourfive, wire]
-songs = [knaan, fourfive]
+count = 0
+stop = 50
+for corp_song in bundle:
+  count += 1
+  if (count == stop):
+    print("trained on ", stop, " songs")
+    break
+  #print(count,": ",orig.metadata.title)
+  
+  orig = corp_song.parse()
 
-#for j in range(8):
- # orig = bundle[j].parse()
-  #print("Title: ",orig.metadata.title)
-for orig in songs:
+  parts = orig.getElementsByClass('Part')
+  my_parts = []
+  for p in parts:
+    my_parts.append(note_to_num(p.flat.notesAndRests))
+  
+  my_notes = merge_parts(my_parts)
 
-  # flatten stream
-  my_notes = orig.flat.notes
-
-  # initialize and fill in frequency matrix ********* fix this to fill in matrix of 640^2 instead of 640
-  for i in range (1, len(my_notes) - 1):
-    if (my_notes[i+1].pitch is None) or (my_notes[i].pitch is None) or (my_notes[i-1].pitch is None) or (my_notes[i-2].pitch is None):
-      continue
-    ql_neg1 = get_ql(my_notes[i+1])
-    ql_0 = get_ql(my_notes[i])
-    ql_1 = get_ql(my_notes[i-1])
-    ql_2 = get_ql(my_notes[i-2])
-    mat2[128*ql_2 + my_notes[i-2].pitch.midi][128*ql_1 + my_notes[i-1].pitch.midi][(128*ql_0 + my_notes[i].pitch.midi)*640 + (128*ql_neg1 + my_notes[i+1].pitch.midi)] += 1
+  for i in range (2, len(my_notes) - 1):
+    mat2[my_notes[i-2]][my_notes[i-1]][my_notes[i]*all_possible + my_notes[i+1]] += 1 #*****************************
 
 # set first note(s) in generated song to first note in original song
-song2 = [128*get_ql(my_notes[0]) + my_notes[0].pitch.midi, 128*get_ql(my_notes[1]) + my_notes[1].pitch.midi]
+song2 = [my_notes[0], my_notes[1]]
 
 # generate song
 for i in range (1, len(my_notes)):
@@ -90,8 +130,8 @@ for i in range (1, len(my_notes)):
   double_note = get_note(rand_num, next_notes)
   if double_note is None:
     continue
-  song2.append(int(double_note/640))
-  song2.append(double_note % 640)
+  song2.append(int(double_note/all_possible))
+  song2.append(double_note % all_possible)
 
 # convert list to stream
 stream2 = to_stream(song2)
