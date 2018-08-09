@@ -44,7 +44,7 @@ class MainWindow(QMainWindow):
             self.ui.track.addWidget(QLabel(self.ui.custom_note.text()))"""
         
         self.s.append(note.Note('C4'))
-        self.s.write('lily.png', '../../img/notes.png')
+        self.s.write('lily.png', '../../img/notes')
         p = QPixmap('../../img/notes.png')
         self.ui.label.setPixmap(p)
 

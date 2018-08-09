@@ -1,0 +1,14 @@
+
+# ignore lilypond junk
+
+*.eps
+*.count
+*.tex
+*.texi
+
+# ignore pycache
+__pycache__
+
+# user generated note pictures
+img/notes.png
+
