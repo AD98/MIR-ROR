@@ -122,7 +122,7 @@ class Ui_MainWindow(object):
         self.menuBar.addAction(self.menuMirror.menuAction())
 
         self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        #QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
