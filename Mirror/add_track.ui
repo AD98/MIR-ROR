@@ -128,8 +128,8 @@
   <widget class="QLabel" name="file_label">
    <property name="geometry">
     <rect>
-     <x>200</x>
-     <y>80</y>
+     <x>160</x>
+     <y>60</y>
      <width>201</width>
      <height>20</height>
     </rect>
@@ -138,16 +138,6 @@
     <string>No file selected</string>
    </property>
   </widget>
-  <zorder>buttonBox</zorder>
-  <zorder>layoutWidget</zorder>
-  <zorder>label_4</zorder>
-  <zorder>file_label</zorder>
-  <zorder>pushButton</zorder>
-  <zorder>label_3</zorder>
-  <zorder>label_2</zorder>
-  <zorder>comboBox_2</zorder>
-  <zorder>comboBox</zorder>
-  <zorder>label</zorder>
  </widget>
  <resources/>
  <connections>
