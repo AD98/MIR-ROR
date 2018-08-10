@@ -13,3 +13,6 @@ mirror
 # user generated note pictures
 img/notes.png
 
+
+# MAC cruft
+.DS_Store
