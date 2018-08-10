@@ -1,4 +1,3 @@
-
 # ignore lilypond junk
 
 *.eps
@@ -7,11 +6,13 @@
 *.texi
 
 # ignore pycache
-__pycache__
+__pycache__/
 
 # user generated note pictures
 img/notes.png
 
+# temp files
+*.swp
 
 # MAC cruft
 .DS_Store
