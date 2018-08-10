@@ -7,6 +7,7 @@ from music21 import *
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.add_track = None
         self.ui = Ui_MainWindow()
         self.s = stream.Stream()
         self.ui.setupUi(self)
@@ -20,6 +21,7 @@ class MainWindow(QMainWindow):
 
     def on_pushButton_3_clicked(self):
         print('add_note')
+        buttons = [self.ui.note1, self.ui.note2, self.ui.note3, self.ui.random_note]
         """if (self.ui.note1.isChecked()):
             self.ui.note1.setAutoExclusive(False)
             self.ui.note1.setChecked(False)
@@ -42,7 +44,11 @@ class MainWindow(QMainWindow):
             self.ui.track.addWidget(QLabel('4'))
         else:
             self.ui.track.addWidget(QLabel(self.ui.custom_note.text()))"""
-        
+        if (self.add_track is not None) and (self.add_track.model is not None) and (len(self.s) > 1):
+            for i in range(3):
+                buttons[i].setCheckable(True)
+            model_notes = self.add_track.model.getBestThree()
+
         self.s.append(note.Note('C4'))
         self.s.write('lily.png', '../img/notes')
         p = QPixmap('../img/notes.png')

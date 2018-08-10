@@ -1,4 +1,4 @@
-from shared import *
+from .shared import *
 
 class Lz:
   def __init__(self, data, rotations=1, sample_len=1, allowed_error=0):
