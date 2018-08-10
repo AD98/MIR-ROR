@@ -7,7 +7,8 @@
 *.texi
 
 # ignore pycache
-__pycache__
+__pycache__/
+mirror
 
 # user generated note pictures
 img/notes.png
