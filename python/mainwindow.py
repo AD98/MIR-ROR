@@ -43,8 +43,21 @@ class MainWindow(QMainWindow):
         else:
             self.ui.track.addWidget(QLabel(self.ui.custom_note.text()))"""
         
-        self.s.append(note.Note('C4'))
-        self.s.write('lily.png', '../img/notes')
+        self.s = converter.parse("tinyNotation: d'8 f g a b2 c'4 C c c c1")
+        #self.s.write('lily.png', '../img/notes')
+        pianoroll = graph.plot.HorizontalBarPitchClassOffset(self.s, colorBackgroundFigure='black')
+        pianoroll.figureSize = (3,2)
+        pianoroll.colorBackgroundFigure = '#000000'
+        pianoroll.colorBackgroundData = '#000000'
+        pianoroll.colorGrid = '#111111'
+        pianoroll.alpha = 1.0
+        pianoroll.colors = ['Cyan']
+        pianoroll.doneAction = None
+        pianoroll.title = None
+        pianoroll.barSpace = 32
+        pianoroll.run()
+        pianoroll.write('../img/notes.png')
+        
         p = QPixmap('../img/notes.png')
         self.ui.label.setPixmap(p)
 
