@@ -19,6 +19,7 @@ class Add_track(QDialog):
     def __init__(self,parent):
         super().__init__()
         self.model = None
+        self.fname = None
         self.ui = Ui_Add_track()
         self.ui.setupUi(self)
         self.ui.pushButton.clicked.connect(self.on_pushButton_clicked)
