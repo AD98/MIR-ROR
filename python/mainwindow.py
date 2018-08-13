@@ -22,9 +22,6 @@ class MainWindow(QMainWindow):
         mixer.music.load(song)
         self.ui.playButton.clicked.connect(self.playButton_clicked)
         self.ui.pauseButton.clicked.connect(self.pauseButton_clicked)        
-        self.ui.note1.setCheckable(False)
-        self.ui.note2.setCheckable(False)
-        self.ui.note3.setCheckable(False)
         
     def on_add_track_btn_clicked(self):
         print('add_track')
@@ -39,7 +36,6 @@ class MainWindow(QMainWindow):
         
         for i in range(4):
             if (buttons[i].isChecked()):
-                print('here', i)
                 buttons[i].setAutoExclusive(False)
                 buttons[i].setChecked(False)
                 buttons[i].setAutoExclusive(True)
@@ -47,6 +43,7 @@ class MainWindow(QMainWindow):
                     to_app = note.Note(np.random.randint(0,128))
                 else:
                     to_app = self.model_notes[i]
+                
                 break
 
         if (to_app is None):
