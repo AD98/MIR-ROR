@@ -1,5 +1,5 @@
 import numpy as np
-from shared import *
+from .shared import *
 
 def getFirst(next_notes, num):
     max_idxs = []
@@ -14,8 +14,8 @@ def getFirst(next_notes, num):
     return max_idxs
 
 
-class first_markov:
-    def __init__(self, data, note_range):
+class First_markov:
+    def __init__(self, data, note_range=128):
         self.data = data
         self.mat = np.zeros((note_range, note_range))
         for i in range(1, len(data)):
@@ -30,8 +30,8 @@ class first_markov:
 
 
 
-class sec_markov:
-    def __init__(self, data, note_range):
+class Sec_markov:
+    def __init__(self, data, note_range=128):
         self.data = data
         self.mat = np.zeros((note_range, note_range, note_range))
         for i in range(2, len(data)):
