@@ -3,6 +3,8 @@ from PyQt5.QtGui import QPixmap
 from mainwindow_ui import *
 from add_track import *
 from music21 import *
+from pygame import mixer
+import pygame
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -12,6 +14,11 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         self.ui.pushButton_3.clicked.connect(self.on_pushButton_3_clicked)
         self.ui.add_track_btn.clicked.connect(self.on_add_track_btn_clicked)
+        pygame.init()
+        song = 'nyny.mid'
+        mixer.music.load(song)
+        self.ui.playButton.clicked.connect(self.playButton_clicked)
+        self.ui.pauseButton.clicked.connect(self.pauseButton_clicked)
 
     def on_add_track_btn_clicked(self):
         print('add_track')
@@ -61,3 +68,13 @@ class MainWindow(QMainWindow):
         p = QPixmap('../img/notes.png')
         self.ui.label.setPixmap(p)
 
+    def playButton_clicked(self):
+        print('clicked play')
+        mixer.music.play(0)
+        #thread = threading.Thread(target=self.updateSlider(), args=())
+        #thread.daemon = True
+        #thread.start()
+
+    def pauseButton_clicked(self):
+        print('clicked pause')
+        mixer.music.stop()
