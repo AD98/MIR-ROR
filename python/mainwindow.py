@@ -47,7 +47,7 @@ class MainWindow(QMainWindow):
             to_app = note.Note(buttons[4].text())
          
         self.s.append(to_app) 
-        self.ui.track.addWidget(QLabel(to_app.nameWithOctave))
+        #self.ui.track.addWidget(QLabel(to_app.nameWithOctave))
 
         if ((self.add_track is not None) and (self.add_track.model is not None) and (len(self.s) > 1)):
             self.model_notes = num_to_note(self.add_track.model.getBestThree(self.s[-1].pitch.midi))
@@ -61,7 +61,7 @@ class MainWindow(QMainWindow):
                     buttons[i].setText(t)
 
 
-        self.s = converter.parse("tinyNotation: d'8 f g a b2 c'4 C c c c1")
+        #self.s = converter.parse("tinyNotation: d'8 f g a b2 c'4 C c c c1")
         #self.s.write('lily.png', '../img/notes')
         pianoroll = graph.plot.HorizontalBarPitchClassOffset(self.s, colorBackgroundFigure='black')
         pianoroll.figureSize = (3,2)
