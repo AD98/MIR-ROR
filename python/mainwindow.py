@@ -12,7 +12,7 @@ temp_midi = 'temp.mid' # holds data about current track
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.add_track = None
+        self.tracks = []
         self.ui = Ui_MainWindow()
         self.s = stream.Stream()
         self.model_notes = []
@@ -25,7 +25,7 @@ class MainWindow(QMainWindow):
         
     def on_add_track_btn_clicked(self):
         print('add_track')
-        self.add_track = Add_track(self)
+        self.tracks.append(Add_track(self))
         self.add_track.show()
 
     def on_pushButton_3_clicked(self):
