@@ -3,12 +3,9 @@ from PyQt5.QtGui import QPixmap
 from mainwindow_ui import *
 from add_track import *
 from music21 import *
-<<<<<<< HEAD
 from pygame import mixer
 import pygame
-=======
 import numpy as np
->>>>>>> master
 
 class MainWindow(QMainWindow):
     def __init__(self):
