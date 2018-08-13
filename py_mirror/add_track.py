@@ -1,13 +1,18 @@
 from PyQt5.QtWidgets import QDialog, QInputDialog, QFileDialog
 from add_track_ui import *
 from music21 import *
+from models.markov_class import *
 
 def get_data(fname):
     s = converter.parse(fname)
     s = s.flat.notes
     ret = []
     for elem in s:
-        ret.append(elem.pitch.midi)
+        if isinstance(elem, note.Note):
+            ret.append(elem.pitch.midi)
+        elif isinstance(elem, chord.Chord):
+            if (len(elem.pitches) > 0):
+                ret.append(elem.pitches[0].midi)
     return ret
 
 class Add_track(QDialog):
