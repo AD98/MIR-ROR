@@ -7,6 +7,8 @@ from pygame import mixer
 import pygame
 import numpy as np
 
+temp_midi = 'temp.mid' # holds data about current track
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -82,9 +84,8 @@ class MainWindow(QMainWindow):
 
     def playButton_clicked(self):
         print('play')
-        mid_fname = 'current_track.mid'
-        self.s.write('midi',mid_fname)
-        mixer.music.load(mid_fname)
+        self.s.write('midi',temp_midi)
+        mixer.music.load(temp_midi)
         mixer.music.play(0)
         #thread = threading.Thread(target=self.updateSlider(), args=())
         #thread.daemon = True
