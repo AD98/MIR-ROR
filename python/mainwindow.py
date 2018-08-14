@@ -47,32 +47,36 @@ class MainWindow(QMainWindow):
         self.add_note(self.ui.custom_btn)
 
     def add_note(self, btn):
-        print('add_note')
+        print('add_note ',btn)
         
         to_app = None
 
         if (btn == self.ui.random_note):
             to_app = note.Note(np.random.randint(0,128))
         elif (btn == self.ui.custom_btn):
-            to_app = note.Note(btn.text())
+            to_app = note.Note(self.ui.custom_note.text())
         else:
-            to_app = note.Note(str(btn.text()))
+            to_app = note.Note(btn.text())
          
         self.s.append(to_app) 
+        self.update_btns()
+        self.update_track()
 
-        suggestion_btns = [self.ui.note1, self.ui.note2, self.ui.note3]
-        if ((self.add_track is not None) and (self.add_track.model is not None) and (len(self.s) > 1)):
-            self.model_notes = num_to_note(self.add_track.model.getBestThree(self.s[-1].pitch.midi))
-            for i in range(len(suggestion_btns)):
-                if (i < len(self.model_notes)):
-                    suggestion_btns[i].setEnabled(True)
-                    suggestion_btns[i].setText(self.model_notes[i].nameWithOctave)
-                else:
-                    suggestion_btns[i].setEnabled(False)
-                    t = 'Possible note' + str(i+1)
-                    suggestion_btns[i].setText(t)
+    def playButton_clicked(self):
+        print('play')
+        self.s.write('midi',temp_midi)
+        mixer.music.load(temp_midi)
+        mixer.music.play(0)
+        #thread = threading.Thread(target=self.updateSlider(), args=())
+        #thread.daemon = True
+        #thread.start()
 
+    def pauseButton_clicked(self):
+        print('pause')
+        mixer.music.stop()
 
+    def update_track(self):
+        print('update_track')
         #self.s = converter.parse("tinyNotation: d'8 f g a b2 c'4 C c c c1")
         #self.s.write('lily.png', '../img/notes')
         pianoroll = graph.plot.HorizontalBarPitchClassOffset(self.s, colorBackgroundFigure='black')
@@ -91,18 +95,20 @@ class MainWindow(QMainWindow):
         p = QPixmap('../img/notes.png')
         self.ui.label.setPixmap(p)
 
-    def playButton_clicked(self):
-        print('play')
-        self.s.write('midi',temp_midi)
-        mixer.music.load(temp_midi)
-        mixer.music.play(0)
-        #thread = threading.Thread(target=self.updateSlider(), args=())
-        #thread.daemon = True
-        #thread.start()
+    def update_btns(self):
+        print('update_btns')
+        suggestion_btns = [self.ui.note1, self.ui.note2, self.ui.note3]
+        if ((self.add_track is not None) and (self.add_track.model is not None) and (len(self.s) >= self.add_track.min_notes)):
+            self.model_notes = num_to_note(self.add_track.model.getBestThree(self.s[-1].pitch.midi))
+            for i in range(len(suggestion_btns)):
+                if (i < len(self.model_notes)):
+                    suggestion_btns[i].setEnabled(True)
+                    suggestion_btns[i].setText(self.model_notes[i].nameWithOctave)
+                else:
+                    suggestion_btns[i].setEnabled(False)
+                    suggestion_btns[i].setText('Possible Note ' + str(i+1))
 
-    def pauseButton_clicked(self):
-        print('pause')
-        mixer.music.stop()
+
 
 def num_to_note(num_list):
     ret = []
