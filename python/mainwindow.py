@@ -34,10 +34,13 @@ class MainWindow(QMainWindow):
         self.ui.pauseButton.clicked.connect(self.pauseButton_clicked)        
 
         #HACK -- suppress music21 images by feeding nonexistant path
-        if common.getPlatform() == 'win':
+        platform = common.getPlatform() 
+        if platform == 'win'
             environment.set('graphicsPath', 'C:/')
+        elif platform == 'mac': 
+            environment.set('graphicsPath', '/usr/bin/true')
         else:
-            environment.set('graphicsPath', '/usr/bin/which')
+            environment.set('graphicsPath', '/bin/true')
 
     def on_add_track_btn_clicked(self):
         print('add_track')
