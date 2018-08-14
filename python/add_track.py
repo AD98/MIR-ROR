@@ -42,7 +42,7 @@ class Add_track(QDialog):
 
         ###### remove this line when not testing
         # self.fname = '/Users/anshuldoshi/Downloads/uptown_funk.mid'
-
+        self.instrument = str(self.ui.comboBox_2.currentText)
         data = get_data(self.fname)
         if (model_num == 0):
             self.model = First_markov(data)
