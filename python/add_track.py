@@ -41,19 +41,13 @@ class Add_track(QDialog):
         print('accepted')
         model_str = str(self.ui.comboBox.currentText())
 
-        ###### remove this line when not testing
-<<<<<<< HEAD
-        # self.fname = '/Users/anshuldoshi/Downloads/uptown_funk.mid'
 
         if (self.fname is None):
             self.error_msg()
             self.fname = 'test.mid'
 
-=======
-        self.fname = 'test.mid'
-        print((self.ui.comboBox_2.currentText()))
+        # self.fname = 'test.mid'
         self.instrument = instrument.fromString(str(self.ui.comboBox_2.currentText()))
->>>>>>> master
         data = get_data(self.fname)
         if (model_str == '1st Order Markov Chain'):
             self.model = First_markov(data)
