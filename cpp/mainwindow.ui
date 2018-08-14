@@ -216,7 +216,7 @@
      <x>0</x>
      <y>0</y>
      <width>872</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="defaultUp">
@@ -224,11 +224,19 @@
    </property>
    <widget class="QMenu" name="menuMirror">
     <property name="title">
-     <string>Mirror</string>
+     <string>File</string>
     </property>
     <addaction name="actionOptions"/>
+    <addaction name="actionLoad_File"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
    </widget>
    <addaction name="menuMirror"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -241,7 +249,17 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOptions">
    <property name="text">
-    <string>options</string>
+    <string>Save File</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About...</string>
+   </property>
+  </action>
+  <action name="actionLoad_File">
+   <property name="text">
+    <string>Load File</string>
    </property>
   </action>
  </widget>

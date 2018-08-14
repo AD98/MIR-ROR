@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '../cpp/mainwindow.ui'
+# Form implementation generated from reading ui file '.\cpp\mainwindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.11.2
 #
@@ -131,11 +131,13 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addLayout(self.verticalLayout)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtWidgets.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 872, 22))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 872, 21))
         self.menuBar.setDefaultUp(False)
         self.menuBar.setObjectName("menuBar")
         self.menuMirror = QtWidgets.QMenu(self.menuBar)
         self.menuMirror.setObjectName("menuMirror")
+        self.menuHelp = QtWidgets.QMenu(self.menuBar)
+        self.menuHelp.setObjectName("menuHelp")
         MainWindow.setMenuBar(self.menuBar)
         self.mainToolBar = QtWidgets.QToolBar(MainWindow)
         self.mainToolBar.setObjectName("mainToolBar")
@@ -145,8 +147,15 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusBar)
         self.actionOptions = QtWidgets.QAction(MainWindow)
         self.actionOptions.setObjectName("actionOptions")
+        self.actionAbout = QtWidgets.QAction(MainWindow)
+        self.actionAbout.setObjectName("actionAbout")
+        self.actionLoad_File = QtWidgets.QAction(MainWindow)
+        self.actionLoad_File.setObjectName("actionLoad_File")
         self.menuMirror.addAction(self.actionOptions)
+        self.menuMirror.addAction(self.actionLoad_File)
+        self.menuHelp.addAction(self.actionAbout)
         self.menuBar.addAction(self.menuMirror.menuAction())
+        self.menuBar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(MainWindow)
         #QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -164,6 +173,9 @@ class Ui_MainWindow(object):
         self.playButton.setText(_translate("MainWindow", "Play"))
         self.pauseButton.setText(_translate("MainWindow", "Pause"))
         self.add_track_btn.setText(_translate("MainWindow", "Add Track"))
-        self.menuMirror.setTitle(_translate("MainWindow", "Mirror"))
-        self.actionOptions.setText(_translate("MainWindow", "options"))
+        self.menuMirror.setTitle(_translate("MainWindow", "File"))
+        self.menuHelp.setTitle(_translate("MainWindow", "Help"))
+        self.actionOptions.setText(_translate("MainWindow", "Save File"))
+        self.actionAbout.setText(_translate("MainWindow", "About..."))
+        self.actionLoad_File.setText(_translate("MainWindow", "Load File"))
 

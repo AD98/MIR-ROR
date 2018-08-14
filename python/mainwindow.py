@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QMainWindow, QLabel
 from PyQt5.QtGui import QPixmap
 from mainwindow_ui import *
 from add_track import *
+from about import *
 from music21 import *
 from pygame import mixer
 import pygame
@@ -25,8 +26,12 @@ class MainWindow(QMainWindow):
         self.ui.random_note.clicked.connect(self.on_random_note_clicked)
         self.ui.custom_btn.clicked.connect(self.on_custom_btn_clicked)
         self.ui.add_track_btn.clicked.connect(self.on_add_track_btn_clicked)
+
+        self.ui.actionLoad_File.triggered.connect(self.load_file_clicked)
+        self.ui.actionAbout.triggered.connect(self.displayAbout)
         self.ui.comboBox.currentIndexChanged.connect(self.on_comboBox_currentIndexChanged)
-        
+
+        # audio backend 
         pygame.init()
 
         # song preview connections
@@ -41,6 +46,23 @@ class MainWindow(QMainWindow):
             environment.set('graphicsPath', '/usr/bin/true')
         else:
             environment.set('graphicsPath', '/bin/true')
+
+
+    def load_file_clicked(self):
+        print('browse')
+        fname, ok = QFileDialog.getOpenFileName(self, 'Open File','/home', 'MIDI files (*.mid)')
+        if ok:
+            self.fname = fname
+            
+        self.s = converter.parse(fname)
+        self.update_track()
+        
+
+    def displayAbout(self):
+        print('about')
+        self.about = About(self)
+        self.about.show()
+
 
     def on_add_track_btn_clicked(self):
         print('add_track')
@@ -100,7 +122,7 @@ class MainWindow(QMainWindow):
         pianoroll.colorBackgroundData = '#000000'
         pianoroll.colorGrid = '#111111'
         pianoroll.alpha = 1.0
-        pianoroll.colors = ['Cyan']
+        pianoroll.colors = ['Cyan', 'pink', 'yellow']
         pianoroll.doneAction = None
         pianoroll.title = None
         pianoroll.barSpace = 32
