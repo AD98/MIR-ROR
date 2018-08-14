@@ -17,8 +17,14 @@ class MainWindow(QMainWindow):
         self.s = stream.Stream()
         self.model_notes = []
         self.ui.setupUi(self)
-        self.ui.pushButton_3.clicked.connect(self.on_pushButton_3_clicked)
+
+        self.ui.note1.clicked.connect(self.on_note1_clicked)
+        self.ui.note2.clicked.connect(self.on_note2_clicked)
+        self.ui.note3.clicked.connect(self.on_note3_clicked)
+        self.ui.random_note.clicked.connect(self.on_random_note_clicked)
+        self.ui.custom_btn.clicked.connect(self.on_custom_btn_clicked)
         self.ui.add_track_btn.clicked.connect(self.on_add_track_btn_clicked)
+        
         pygame.init()
         self.ui.playButton.clicked.connect(self.playButton_clicked)
         self.ui.pauseButton.clicked.connect(self.pauseButton_clicked)        
@@ -27,41 +33,44 @@ class MainWindow(QMainWindow):
         print('add_track')
         self.add_track = Add_track(self)
         self.add_track.show()
+    
 
-    def on_pushButton_3_clicked(self):
+    def on_note1_clicked(self):
+        self.add_note(self.ui.note1)
+    def on_note2_clicked(self):
+        self.add_note(self.ui.note2)
+    def on_note3_clicked(self):
+        self.add_note(self.ui.note3)
+    def on_random_note_clicked(self):
+        self.add_note(self.ui.random_note)
+    def on_custom_btn_clicked(self):
+        self.add_note(self.ui.custom_btn)
+
+    def add_note(self, btn):
         print('add_note')
-        buttons = [self.ui.note1, self.ui.note2, self.ui.note3, self.ui.random_note, self.ui.custom_note]
         
         to_app = None
-        
-        for i in range(4):
-            if (buttons[i].isChecked()):
-                buttons[i].setAutoExclusive(False)
-                buttons[i].setChecked(False)
-                buttons[i].setAutoExclusive(True)
-                if (i == 3):
-                    to_app = note.Note(np.random.randint(0,128))
-                else:
-                    to_app = self.model_notes[i]
-                
-                break
 
-        if (to_app is None):
-            to_app = note.Note(buttons[4].text())
+        if (btn == self.ui.random_note):
+            to_app = note.Note(np.random.randint(0,128))
+        elif (btn == self.ui.custom_btn):
+            to_app = note.Note(btn.text())
+        else:
+            to_app = note.Note(str(btn.text()))
          
         self.s.append(to_app) 
-        #self.ui.track.addWidget(QLabel(to_app.nameWithOctave))
 
+        suggestion_btns = [self.ui.note1, self.ui.note2, self.ui.note3]
         if ((self.add_track is not None) and (self.add_track.model is not None) and (len(self.s) > 1)):
             self.model_notes = num_to_note(self.add_track.model.getBestThree(self.s[-1].pitch.midi))
-            for i in range(3):
+            for i in range(len(suggestion_btns)):
                 if (i < len(self.model_notes)):
-                    buttons[i].setCheckable(True)
-                    buttons[i].setText(self.model_notes[i].nameWithOctave)
+                    suggestion_btns[i].setEnabled(True)
+                    suggestion_btns[i].setText(self.model_notes[i].nameWithOctave)
                 else:
-                    buttons[i].setCheckable(False)
+                    suggestion_btns[i].setEnabled(False)
                     t = 'Possible note' + str(i+1)
-                    buttons[i].setText(t)
+                    suggestion_btns[i].setText(t)
 
 
         #self.s = converter.parse("tinyNotation: d'8 f g a b2 c'4 C c c c1")

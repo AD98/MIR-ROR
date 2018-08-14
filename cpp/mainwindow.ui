@@ -30,7 +30,10 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0,0,0">
       <item>
-       <widget class="QRadioButton" name="note1">
+       <widget class="QPushButton" name="note1">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -43,7 +46,10 @@
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="note2">
+       <widget class="QPushButton" name="note2">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -56,7 +62,10 @@
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="note3">
+       <widget class="QPushButton" name="note3">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -69,7 +78,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="random_note">
+       <widget class="QPushButton" name="random_note">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -98,15 +107,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_3">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+       <widget class="QPushButton" name="custom_btn">
         <property name="text">
-         <string>Add Note</string>
+         <string>Add Custom Note</string>
         </property>
        </widget>
       </item>
@@ -189,7 +192,7 @@
      <x>0</x>
      <y>0</y>
      <width>872</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="defaultUp">
