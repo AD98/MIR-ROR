@@ -13,7 +13,8 @@ temp_midi = 'temp.mid' # holds data about current track
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.add_track = None
+        self.tracks = []
+        self.cur_track = 0
         self.ui = Ui_MainWindow()
         self.s = stream.Stream()
         self.model_notes = []
@@ -28,6 +29,7 @@ class MainWindow(QMainWindow):
 
         self.ui.actionLoad_File.triggered.connect(self.load_file_clicked)
         self.ui.actionAbout.triggered.connect(self.displayAbout)
+        self.ui.comboBox.currentIndexChanged.connect(self.on_comboBox_currentIndexChanged)
 
         # audio backend 
         pygame.init()
@@ -37,8 +39,15 @@ class MainWindow(QMainWindow):
         self.ui.pauseButton.clicked.connect(self.pauseButton_clicked)        
 
         #HACK -- suppress music21 images by feeding nonexistant path
-        environment.set('graphicsPath', '/')
-        
+        platform = common.getPlatform() 
+        if platform == 'win':
+            environment.set('graphicsPath', 'C:/')
+        elif platform == 'darwin': 
+            environment.set('graphicsPath', '/usr/bin/true')
+        else:
+            environment.set('graphicsPath', '/bin/true')
+
+
     def load_file_clicked(self):
         print('browse')
         fname, ok = QFileDialog.getOpenFileName(self, 'Open File','/home', 'MIDI files (*.mid)')
@@ -46,18 +55,22 @@ class MainWindow(QMainWindow):
             self.fname = fname
             
         self.s = converter.parse(fname)
-        self.s.show('text')
+        self.update_track()
+        
 
     def displayAbout(self):
         print('about')
         self.about = About(self)
         self.about.show()
 
+
     def on_add_track_btn_clicked(self):
         print('add_track')
-        self.add_track = Add_track(self)
-        self.add_track.show()
+        self.tracks.append(Add_track(self))
+        self.tracks[-1].show()
     
+    def on_comboBox_currentIndexChanged(self, index):
+        self.cur_track = index
 
     def on_note1_clicked(self):
         self.add_note(self.ui.note1)
@@ -82,7 +95,7 @@ class MainWindow(QMainWindow):
         else:
             to_app = note.Note(btn.text())
          
-        self.s.append(to_app) 
+        self.s[self.cur_track].append(to_app) 
         self.update_btns()
         self.update_track()
 
@@ -109,7 +122,7 @@ class MainWindow(QMainWindow):
         pianoroll.colorBackgroundData = '#000000'
         pianoroll.colorGrid = '#111111'
         pianoroll.alpha = 1.0
-        pianoroll.colors = ['Cyan']
+        pianoroll.colors = ['Cyan', 'pink', 'yellow']
         pianoroll.doneAction = None
         pianoroll.title = None
         pianoroll.barSpace = 32
@@ -122,8 +135,14 @@ class MainWindow(QMainWindow):
     def update_btns(self):
         print('update_btns')
         suggestion_btns = [self.ui.note1, self.ui.note2, self.ui.note3]
-        if ((self.add_track is not None) and (self.add_track.model is not None) and (len(self.s) >= self.add_track.min_notes)):
-            self.model_notes = num_to_note(self.add_track.model.getBestThree(self.s[-1].pitch.midi))
+        if ((len(self.tracks) > self.cur_track) and (self.tracks[self.cur_track].model is not None) and (len(self.s[self.cur_track]) >= self.tracks[self.cur_track].min_notes)):
+        #if ((self.add_track is not None) and (self.add_track.model is not None) and (len(self.s) >= self.add_track.min_notes)):
+            base_notes = None
+            if (isinstance(self.tracks[self.cur_track].model, First_markov)):
+                base_notes = self.s[self.cur_track][-1].pitch.midi
+            elif (isinstance(self.tracks[self.cur_track].model, Sec_markov)):
+                base_notes = [self.s[self.cur_track][len(self.s[self.cur_track]) - 2].pitch.midi, self.s[self.cur_track][-1].pitch.midi]
+            self.model_notes = num_to_note(self.tracks[self.cur_track].model.getBestThree(base_notes))
             for i in range(len(suggestion_btns)):
                 if (i < len(self.model_notes)):
                     suggestion_btns[i].setEnabled(True)
@@ -132,7 +151,14 @@ class MainWindow(QMainWindow):
                     suggestion_btns[i].setEnabled(False)
                     suggestion_btns[i].setText('Possible Note ' + str(i+1))
 
-
+    def after_add_track(self):
+        self.ui.comboBox.setEnabled(True)
+        self.ui.random_note.setEnabled(True)
+        self.ui.custom_btn.setEnabled(True)
+        self.ui.comboBox.addItem(str(len(self.tracks)))
+        self.ui.comboBox.setCurrentIndex(len(self.tracks) - 1)
+        self.s.append(stream.Part())
+        self.update_btns()
 
 def num_to_note(num_list):
     ret = []
