@@ -136,6 +136,7 @@ class MainWindow(QMainWindow):
         self.ui.comboBox.addItem(str(len(self.tracks)))
         self.ui.comboBox.setCurrentIndex(len(self.tracks) - 1)
         self.s.append(stream.Part())
+        self.s[-1].append(self.tracks[-1].instrument)
         self.update_btns()
 
 def num_to_note(num_list):
