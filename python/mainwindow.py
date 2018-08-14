@@ -44,7 +44,9 @@ class MainWindow(QMainWindow):
         fname, ok = QFileDialog.getOpenFileName(self, 'Open File','/home', 'MIDI files (*.mid)')
         if ok:
             self.fname = fname
-            self.ui.file_label.setText(fname)
+            
+        self.s = converter.parse(fname)
+        self.s.show('text')
 
     def displayAbout(self):
         print('about')
