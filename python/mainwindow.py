@@ -35,7 +35,7 @@ class MainWindow(QMainWindow):
 
         #HACK -- suppress music21 images by feeding nonexistant path
         platform = common.getPlatform() 
-        if platform == 'win'
+        if platform == 'win':
             environment.set('graphicsPath', 'C:/')
         elif platform == 'mac': 
             environment.set('graphicsPath', '/usr/bin/true')
