@@ -2,7 +2,8 @@ from PyQt5.QtWidgets import QMainWindow, QLabel
 from PyQt5.QtGui import QPixmap
 from mainwindow_ui import *
 from add_track import *
-#from about import *
+from about import *
+from dialog2 import *
 from music21 import *
 from pygame import mixer
 import pygame
@@ -105,7 +106,14 @@ class MainWindow(QMainWindow):
                 to_app = note.Note(np.random.randint(0,128))
             elif (btn == self.ui.custom_btn):
                 # make a try-catch here
-                to_app = note.Note(self.ui.custom_note.text())
+                try:
+                    to_app = note.Note(self.ui.custom_note.text())
+                except pitch.AccidentalException:
+                    self.error_msg()
+                    print('exception found')
+                    return
+
+
             else:
                 if (btn == self.ui.note1):
                     to_app = self.model_notes[0]
@@ -122,6 +130,12 @@ class MainWindow(QMainWindow):
         
         self.update_btns()
         self.update_track()
+
+
+    def error_msg(self):
+        print('error msg')
+        self.error = Dialog2(self)
+        self.error.show()
 
     def playButton_clicked(self):
         print('play')
