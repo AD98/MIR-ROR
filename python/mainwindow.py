@@ -17,11 +17,18 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         self.ui.pushButton_3.clicked.connect(self.on_pushButton_3_clicked)
         self.ui.add_track_btn.clicked.connect(self.on_add_track_btn_clicked)
+
+        # audio backend 
         pygame.init()
         song = 'nyny.mid'
         mixer.music.load(song)
+
+        # song preview connections
         self.ui.playButton.clicked.connect(self.playButton_clicked)
         self.ui.pauseButton.clicked.connect(self.pauseButton_clicked)        
+
+        #HACK -- suppress music21 images by feeding nonexistant path
+        environment.set('graphicsPath', '/')
         
     def on_add_track_btn_clicked(self):
         print('add_track')
