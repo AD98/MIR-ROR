@@ -41,16 +41,16 @@ class Add_track(QDialog):
         model_str = str(self.ui.comboBox.currentText())
 
         ###### remove this line when not testing
-        # self.fname = 'test.mid'
+        self.fname = 'test.mid'
         print((self.ui.comboBox_2.currentText()))
         self.instrument = instrument.fromString(str(self.ui.comboBox_2.currentText()))
         data = get_data(self.fname)
         if (model_str == '1st Order Markov Chain'):
             self.model = First_markov(data)
-            self.min_notes = 2
+            self.min_notes = 1
         elif (model_str == '2nd Order Markov Chain'):
             self.model = Sec_markov(data)
-            self.min_notes = 3
+            self.min_notes = 2
         elif (model_str == 'Lempel ziv'):
             self.model = Lz(data)
 

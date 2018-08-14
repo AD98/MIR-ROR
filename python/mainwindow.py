@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QMainWindow, QLabel
 from PyQt5.QtGui import QPixmap
 from mainwindow_ui import *
 from add_track import *
-from about import *
+#from about import *
 from music21 import *
 from pygame import mixer
 import pygame
@@ -16,7 +16,7 @@ class MainWindow(QMainWindow):
         self.tracks = []
         self.cur_track = 0
         self.ui = Ui_MainWindow()
-        self.s = stream.Stream()
+        self.s = stream.Score()
         self.model_notes = []
         self.ui.setupUi(self)
 
@@ -94,8 +94,12 @@ class MainWindow(QMainWindow):
             to_app = note.Note(self.ui.custom_note.text())
         else:
             to_app = note.Note(btn.text())
-         
-        self.s[self.cur_track].append(to_app) 
+        
+        
+        if (len(self.s[self.cur_track].flat.notes) % 4 == 0):
+            self.s[self.cur_track].append(stream.Measure())
+
+        self.s[self.cur_track][-1].append(to_app) 
         self.update_btns()
         self.update_track()
 
@@ -116,6 +120,7 @@ class MainWindow(QMainWindow):
         print('update_track')
         #self.s = converter.parse("tinyNotation: d'8 f g a b2 c'4 C c c c1")
         #self.s.write('lily.png', '../img/notes')
+        self.s.show('text')
         pianoroll = graph.plot.HorizontalBarPitchSpaceOffset(self.s, colorBackgroundFigure='black')
         pianoroll.figureSize = (3,2)
         pianoroll.colorBackgroundFigure = '#000000'
@@ -135,13 +140,16 @@ class MainWindow(QMainWindow):
     def update_btns(self):
         print('update_btns')
         suggestion_btns = [self.ui.note1, self.ui.note2, self.ui.note3]
-        if ((len(self.tracks) > self.cur_track) and (self.tracks[self.cur_track].model is not None) and (len(self.s[self.cur_track]) >= self.tracks[self.cur_track].min_notes)):
-        #if ((self.add_track is not None) and (self.add_track.model is not None) and (len(self.s) >= self.add_track.min_notes)):
+        cur_track_notes = self.s[self.cur_track].flat.notes
+        if ((len(self.tracks) > self.cur_track) and 
+                (self.tracks[self.cur_track].model is not None) and 
+                (len(cur_track_notes) >= self.tracks[self.cur_track].min_notes)):
+            
             base_notes = None
             if (isinstance(self.tracks[self.cur_track].model, First_markov)):
-                base_notes = self.s[self.cur_track][-1].pitch.midi
+                base_notes = cur_track_notes[-1].pitch.midi
             elif (isinstance(self.tracks[self.cur_track].model, Sec_markov)):
-                base_notes = [self.s[self.cur_track][len(self.s[self.cur_track]) - 2].pitch.midi, self.s[self.cur_track][-1].pitch.midi]
+                base_notes = [cur_track_notes[len(cur_track_notes) - 2].pitch.midi, cur_track_notes[-1].pitch.midi]
             self.model_notes = num_to_note(self.tracks[self.cur_track].model.getBestThree(base_notes))
             for i in range(len(suggestion_btns)):
                 if (i < len(self.model_notes)):
