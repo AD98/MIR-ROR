@@ -74,7 +74,22 @@
       </item>
       <item>
        <property name="text">
-        <string>Guitar</string>
+        <string>Acoustic Guitar</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Saxophone</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Trumpet</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Violin</string>
        </property>
       </item>
      </widget>

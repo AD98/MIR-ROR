@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'add_track.ui'
+# Form implementation generated from reading ui file '../cpp/add_track.ui'
 #
 # Created by: PyQt5 UI code generator 5.11.2
 #
@@ -36,6 +36,9 @@ class Ui_Add_track(object):
         self.comboBox_2.setObjectName("comboBox_2")
         self.comboBox_2.addItem("")
         self.comboBox_2.addItem("")
+        self.comboBox_2.addItem("")
+        self.comboBox_2.addItem("")
+        self.comboBox_2.addItem("")
         self.formLayout.setWidget(2, QtWidgets.QFormLayout.FieldRole, self.comboBox_2)
         self.label_2 = QtWidgets.QLabel(self.layoutWidget)
         self.label_2.setObjectName("label_2")
@@ -66,7 +69,10 @@ class Ui_Add_track(object):
         self.comboBox.setItemText(1, _translate("Add_track", "2nd Order Markov Chain"))
         self.comboBox.setItemText(2, _translate("Add_track", "Lempel ziv"))
         self.comboBox_2.setItemText(0, _translate("Add_track", "Piano"))
-        self.comboBox_2.setItemText(1, _translate("Add_track", "Guitar"))
+        self.comboBox_2.setItemText(1, _translate("Add_track", "Acoustic Guitar"))
+        self.comboBox_2.setItemText(2, _translate("Add_track", "Saxophone"))
+        self.comboBox_2.setItemText(3, _translate("Add_track", "Trumpet"))
+        self.comboBox_2.setItemText(4, _translate("Add_track", "Violin"))
         self.label_2.setText(_translate("Add_track", "Model Type:"))
         self.label_3.setText(_translate("Add_track", "Instrument:"))
         self.pushButton.setText(_translate("Add_track", "Browse"))
