@@ -15,6 +15,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.tracks = []
         self.cur_track = 0
+        self.num_notes = 1
         self.ui = Ui_MainWindow()
         self.s = stream.Score()
         self.model_notes = []
@@ -26,6 +27,7 @@ class MainWindow(QMainWindow):
         self.ui.random_note.clicked.connect(self.on_random_note_clicked)
         self.ui.custom_btn.clicked.connect(self.on_custom_btn_clicked)
         self.ui.add_track_btn.clicked.connect(self.on_add_track_btn_clicked)
+        self.ui.comboBox_2.currentIndexChanged.connect(self.on_comboBox_2_currentIndexChanged)
 
         self.ui.actionLoad_File.triggered.connect(self.load_file_clicked)
         self.ui.actionAbout.triggered.connect(self.displayAbout)
@@ -56,7 +58,6 @@ class MainWindow(QMainWindow):
             
         self.s = converter.parse(fname)
         self.update_track()
-        
 
     def displayAbout(self):
         print('about')
@@ -72,6 +73,9 @@ class MainWindow(QMainWindow):
     def on_comboBox_currentIndexChanged(self, index):
         self.cur_track = index
 
+    def on_comboBox_2_currentIndexChanged(self, index):
+        self.num_notes = index + 1
+
     def on_note1_clicked(self):
         self.add_note(self.ui.note1)
     def on_note2_clicked(self):
@@ -85,21 +89,27 @@ class MainWindow(QMainWindow):
 
     def add_note(self, btn):
         print('add_note ',btn)
-        
-        to_app = None
+       
+        for i in range(self.num_notes):
+            to_app = None
+            if (btn == self.ui.random_note):
+                to_app = note.Note(np.random.randint(0,128))
+            elif (btn == self.ui.custom_btn):
+                to_app = note.Note(self.ui.custom_note.text())
+            else:
+                if (btn == self.ui.note1):
+                    to_app = self.model_notes[0]
+                elif (btn == self.ui.note2):
+                    to_app = self.model_notes[1]
+                elif (btn == self.ui.note3):
+                    to_app = self.model_notes[2]
+            
+            if (len(self.s[self.cur_track].flat.notes) % 4 == 0):
+                self.s[self.cur_track].append(stream.Measure())
 
-        if (btn == self.ui.random_note):
-            to_app = note.Note(np.random.randint(0,128))
-        elif (btn == self.ui.custom_btn):
-            to_app = note.Note(self.ui.custom_note.text())
-        else:
-            to_app = note.Note(btn.text())
-        
-        
-        if (len(self.s[self.cur_track].flat.notes) % 4 == 0):
-            self.s[self.cur_track].append(stream.Measure())
+            self.s[self.cur_track][-1].append(to_app) 
+            self.update_btns(False)
 
-        self.s[self.cur_track][-1].append(to_app) 
         self.update_btns()
         self.update_track()
 
@@ -137,7 +147,7 @@ class MainWindow(QMainWindow):
         p = QPixmap('../img/notes.png')
         self.ui.label.setPixmap(p)
 
-    def update_btns(self):
+    def update_btns(self, change_text=True):
         print('update_btns')
         suggestion_btns = [self.ui.note1, self.ui.note2, self.ui.note3]
         cur_track_notes = self.s[self.cur_track].flat.notes
@@ -151,13 +161,15 @@ class MainWindow(QMainWindow):
             elif (isinstance(self.tracks[self.cur_track].model, Sec_markov)):
                 base_notes = [cur_track_notes[len(cur_track_notes) - 2].pitch.midi, cur_track_notes[-1].pitch.midi]
             self.model_notes = num_to_note(self.tracks[self.cur_track].model.getBestThree(base_notes))
-            for i in range(len(suggestion_btns)):
-                if (i < len(self.model_notes)):
-                    suggestion_btns[i].setEnabled(True)
-                    suggestion_btns[i].setText(self.model_notes[i].nameWithOctave)
-                else:
-                    suggestion_btns[i].setEnabled(False)
-                    suggestion_btns[i].setText('Possible Note ' + str(i+1))
+            
+            if (change_text):
+                for i in range(len(suggestion_btns)):
+                    if (i < len(self.model_notes)):
+                        suggestion_btns[i].setEnabled(True)
+                        suggestion_btns[i].setText(self.model_notes[i].nameWithOctave)
+                    else:
+                        suggestion_btns[i].setEnabled(False)
+                        suggestion_btns[i].setText('Possible Note ' + str(i+1))
 
     def after_add_track(self):
         self.ui.comboBox.setEnabled(True)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\cpp\mainwindow.ui'
+# Form implementation generated from reading ui file '../cpp/mainwindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.11.2
 #
@@ -41,6 +41,16 @@ class Ui_MainWindow(object):
         self.comboBox.setEnabled(False)
         self.comboBox.setObjectName("comboBox")
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.comboBox)
+        self.label_3 = QtWidgets.QLabel(self.centralWidget)
+        self.label_3.setObjectName("label_3")
+        self.formLayout.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.label_3)
+        self.comboBox_2 = QtWidgets.QComboBox(self.centralWidget)
+        self.comboBox_2.setObjectName("comboBox_2")
+        self.comboBox_2.addItem("")
+        self.comboBox_2.addItem("")
+        self.comboBox_2.addItem("")
+        self.comboBox_2.addItem("")
+        self.formLayout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.comboBox_2)
         self.verticalLayout_2.addLayout(self.formLayout)
         self.note1 = QtWidgets.QPushButton(self.centralWidget)
         self.note1.setEnabled(False)
@@ -131,7 +141,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addLayout(self.verticalLayout)
         MainWindow.setCentralWidget(self.centralWidget)
         self.menuBar = QtWidgets.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 872, 21))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 872, 22))
         self.menuBar.setDefaultUp(False)
         self.menuBar.setObjectName("menuBar")
         self.menuMirror = QtWidgets.QMenu(self.menuBar)
@@ -164,6 +174,11 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label_2.setText(_translate("MainWindow", "Choose a track:"))
+        self.label_3.setText(_translate("MainWindow", "# of Notes:"))
+        self.comboBox_2.setItemText(0, _translate("MainWindow", "1"))
+        self.comboBox_2.setItemText(1, _translate("MainWindow", "2"))
+        self.comboBox_2.setItemText(2, _translate("MainWindow", "3"))
+        self.comboBox_2.setItemText(3, _translate("MainWindow", "4"))
         self.note1.setText(_translate("MainWindow", "Possible Note 1"))
         self.note2.setText(_translate("MainWindow", "Possible Note 2"))
         self.note3.setText(_translate("MainWindow", "Possible Note 3"))
