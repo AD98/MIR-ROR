@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QDialog, QInputDialog, QFileDialog
 from add_track_ui import *
 from music21 import *
 from models.markov_class import *
+import sys
 
 def get_data(fname):
     s = converter.parse(fname)
@@ -16,10 +17,12 @@ def get_data(fname):
     return ret
 
 class Add_track(QDialog):
-    def __init__(self,parent):
+    def __init__(self, main_win):
         super().__init__()
+        self.main_win = main_win
         self.model = None
         self.fname = None
+        self.min_notes = sys.maxsize
         self.ui = Ui_Add_track()
         self.ui.setupUi(self)
         self.ui.pushButton.clicked.connect(self.on_pushButton_clicked)
@@ -40,5 +43,8 @@ class Add_track(QDialog):
             self.model = Lz(data)
         elif (model_num == 2):
             self.model = First_markov(data)
+            self.min_notes = 1
         elif (model_num == 3):
             self.model = Sec_markov(data)
+            self.min_notes = 2
+        self.main_win.update_btns()
