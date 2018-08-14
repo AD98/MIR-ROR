@@ -29,8 +29,11 @@ class MainWindow(QMainWindow):
         self.ui.add_track_btn.clicked.connect(self.on_add_track_btn_clicked)
         self.ui.comboBox_2.currentIndexChanged.connect(self.on_comboBox_2_currentIndexChanged)
 
+        #toolbar buttons
         self.ui.actionLoad_File.triggered.connect(self.load_file_clicked)
         self.ui.actionAbout.triggered.connect(self.displayAbout)
+        self.ui.actionNew.triggered.connect(self.new_clicked)
+
         self.ui.comboBox.currentIndexChanged.connect(self.on_comboBox_currentIndexChanged)
 
         # audio backend 
@@ -58,6 +61,12 @@ class MainWindow(QMainWindow):
             
         self.s = converter.parse(fname)
         self.update_track()
+        
+    def new_clicked(self):
+        print('new!')
+        self.s = stream.Stream()
+        self.model_notes = []
+        self.ui.label.setPixmap(QPixmap(''))       
 
     def displayAbout(self):
         print('about')
@@ -95,6 +104,7 @@ class MainWindow(QMainWindow):
             if (btn == self.ui.random_note):
                 to_app = note.Note(np.random.randint(0,128))
             elif (btn == self.ui.custom_btn):
+                # make a try-catch here
                 to_app = note.Note(self.ui.custom_note.text())
             else:
                 if (btn == self.ui.note1):
@@ -109,7 +119,7 @@ class MainWindow(QMainWindow):
 
             self.s[self.cur_track][-1].append(to_app) 
             self.update_btns(False)
-
+        
         self.update_btns()
         self.update_track()
 
@@ -123,8 +133,9 @@ class MainWindow(QMainWindow):
         #thread.start()
 
     def pauseButton_clicked(self):
-        print('pause')
+        print('stopping music')
         mixer.music.stop()
+
 
     def update_track(self):
         print('update_track')

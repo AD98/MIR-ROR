@@ -21,4 +21,6 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui \
     add_track.ui \
-    about.ui
+    about.ui \
+    dialog.ui \
+    dialog2.ui
