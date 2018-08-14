@@ -50,16 +50,6 @@
      <widget class="QComboBox" name="comboBox">
       <item>
        <property name="text">
-        <string>&lt;Select Model&gt;</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Lempel ziv</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
         <string>1st Order Markov Chain</string>
        </property>
       </item>
@@ -68,23 +58,23 @@
         <string>2nd Order Markov Chain</string>
        </property>
       </item>
+      <item>
+       <property name="text">
+        <string>Lempel ziv</string>
+       </property>
+      </item>
      </widget>
     </item>
     <item row="2" column="1">
      <widget class="QComboBox" name="comboBox_2">
       <item>
        <property name="text">
-        <string>&lt;Select Instrument&gt;</string>
+        <string>Piano</string>
        </property>
       </item>
       <item>
        <property name="text">
         <string>Guitar</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Piano</string>
        </property>
       </item>
      </widget>
