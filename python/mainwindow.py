@@ -37,7 +37,7 @@ class MainWindow(QMainWindow):
         platform = common.getPlatform() 
         if platform == 'win':
             environment.set('graphicsPath', 'C:/')
-        elif platform == 'mac': 
+        elif platform == 'darwin': 
             environment.set('graphicsPath', '/usr/bin/true')
         else:
             environment.set('graphicsPath', '/bin/true')
