@@ -100,7 +100,7 @@ class MainWindow(QMainWindow):
         pianoroll.colorBackgroundData = '#000000'
         pianoroll.colorGrid = '#111111'
         pianoroll.alpha = 1.0
-        pianoroll.colors = ['Cyan']
+        pianoroll.colors = ['Cyan', 'pink', 'yellow']
         pianoroll.doneAction = None
         pianoroll.title = None
         pianoroll.barSpace = 32

@@ -31,7 +31,7 @@ class Add_track(QDialog):
 
     def on_pushButton_clicked(self):
         print('browse')
-        fname, ok = QFileDialog.getOpenFileName(self, 'Open File','/home', 'MIDI files (*.mid)')
+        fname, ok = QFileDialog.getOpenFileName(self, 'Open File','./', 'MIDI files (*.mid)')
         if ok:
             self.fname = fname
             self.ui.file_label.setText(fname)
