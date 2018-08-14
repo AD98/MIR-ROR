@@ -41,7 +41,7 @@ class Add_track(QDialog):
         model_str = str(self.ui.comboBox.currentText())
 
         ###### remove this line when not testing
-        self.fname = '/Users/anshuldoshi/Downloads/uptown_funk.mid'
+        # self.fname = 'test.mid'
         print((self.ui.comboBox_2.currentText()))
         self.instrument = instrument.fromString(str(self.ui.comboBox_2.currentText()))
         data = get_data(self.fname)
