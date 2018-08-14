@@ -226,6 +226,7 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionNew"/>
     <addaction name="actionOptions"/>
     <addaction name="actionLoad_File"/>
    </widget>
@@ -260,6 +261,11 @@
   <action name="actionLoad_File">
    <property name="text">
     <string>Load File</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="text">
+    <string>New</string>
    </property>
   </action>
  </widget>

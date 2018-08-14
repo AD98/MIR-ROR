@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QDialog, QInputDialog, QFileDialog
 from add_track_ui import *
+from dialog import *
 from music21 import *
 from models.markov_class import *
 from models.lz_class import *
@@ -43,6 +44,10 @@ class Add_track(QDialog):
         ###### remove this line when not testing
         # self.fname = '/Users/anshuldoshi/Downloads/uptown_funk.mid'
 
+        if (self.fname is None):
+            self.error_msg()
+            self.fname = 'test.mid'
+
         data = get_data(self.fname)
         if (model_num == 0):
             self.model = First_markov(data)
@@ -55,3 +60,7 @@ class Add_track(QDialog):
 
         self.main_win.after_add_track()
         
+    def error_msg(self):
+        print('error msg')
+        self.error = Dialog(self)
+        self.error.show()
