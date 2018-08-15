@@ -9,16 +9,33 @@ from models.markov_class import *
 from models.lz_class import *
 from utils import *
 
-def get_data(fname):
+def get_data(fname:
     s = converter.parse(fname)
-    s = s.flat.notes
+    self.key = s.analyze('key')
     ret = []
-    for elem in s:
-        if isinstance(elem, note.Note):
-            ret.append(elem.pitch.midi)
-        elif isinstance(elem, chord.Chord):
-            if (len(elem.pitches) > 0):
-                ret.append(elem.pitches[0].midi)
+    if self.chords:
+        s = s.chordify()
+        for elem in s:
+            dict_key = chord_parse(roman.romanNumeralFromChord(s, self.key))
+            if (dict_key in chord_dict):
+                ret.append(chord_dict[dict_key])
+
+    else:
+        s = s.flat.notes
+        for elem in s:
+            if isinstance(elem, note.Note):
+                ret.append(elem.pitch.midi)
+            elif isinstance(elem, chord.Chord):
+                if (len(elem.pitches) > 0):
+                    ret.append(elem.pitches[0].midi)
+    return ret
+
+def chord_parse(rn):
+    str_chord = rn.figure
+    ret = ''
+    for char in str_chord:
+        if (char == 'i') or (char == 'v') or (char == 'I') or char == 'V'):
+            ret += char
     return ret
 
 class Add_track(QDialog):
@@ -27,6 +44,7 @@ class Add_track(QDialog):
         self.main_win = main_win
         self.model = None
         self.fname = None
+        self.chords = False
         self.min_notes = sys.maxsize
         self.ui = Ui_Add_track()
         self.ui.setupUi(self)
@@ -49,10 +67,9 @@ class Add_track(QDialog):
             self.error_msg()
             self.fname = getSourceFilePath().joinpath('mid', 'test.mid')
 
-
-        # self.fname = 'test.mid'
         self.instrument = instrument.fromString(str(self.ui.comboBox_2.currentText()))
         data = get_data(self.fname)
+
         if (model_str == '1st Order Markov Chain'):
             self.model = First_markov(data)
             self.min_notes = 1
