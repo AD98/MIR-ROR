@@ -1,26 +1,29 @@
+# QT 
 from PyQt5.QtWidgets import QMainWindow, QLabel, QApplication
 from PyQt5.QtGui import QPixmap
-from mainwindow_ui import *
-from add_track import *
-from about import *
-from dialog2 import *
+
+# External
 from music21 import *
 from pygame import mixer
 import pygame
 import numpy as np
 
-temp_midi = 'temp.mid' # holds data about current track
+# Internal
+from mainwindow_ui import *
+from add_track import *
+from about import *
+from dialog2 import *
+from utils import *
+
+TEMP_MIDI = 'temp.mid' # holds data about current track
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.tracks = []
-        self.cur_track = 0
-        self.num_notes = 1
         self.ui = Ui_MainWindow()
-        self.s = stream.Score()
-        self.model_notes = []
         self.ui.setupUi(self)
+        self.init_variables()
+        self.ui.label.setPixmap(QPixmap(''))       
 
         self.ui.note1.clicked.connect(self.on_note1_clicked)
         self.ui.note2.clicked.connect(self.on_note2_clicked)
@@ -54,27 +57,41 @@ class MainWindow(QMainWindow):
         else:
             environment.set('graphicsPath', '/bin/true')
 
+        self.rootfp = getSourceFilePath()
+
 
     def load_file_clicked(self):
-        print('load')
+        print('load button clicked')
         fname, ok = QFileDialog.getOpenFileName(self, 'Open File','/home', 'MIDI files (*.mid)')
         if ok:
-            self.fname = fname
-            
-        self.s = converter.parse(fname)
+            self.load_file(fname)
+    
+    def load_file(self, fname):
+        self.new_clicked()
+
+        # HACK not actually allowing you to change old data
+        self.loaded_stream = converter.parse(fname)
+        
         self.update_track()
         
     def save_file_clicked(self):
         print('save')
         fname, ok = QFileDialog.getSaveFileName(self, 'Save File','/home', 'MIDI files (*.mid)')
-        self.s.write('midi', fname)
+        if ok:
+            temp_stream = self.get_stream()
+            temp_stream.write('midi', fname)
 
     def new_clicked(self):
         print('new!')
-        self.s = stream.Stream()
-        self.model_notes = []
-        self.ui.label.setPixmap(QPixmap(''))       
-
+        self.ui.label.setPixmap(QPixmap(''))
+        self.init_variables()
+        self.reset_btns()
+        self.ui.random_note.setEnabled(False)
+        self.ui.custom_btn.setEnabled(False)
+        self.ui.comboBox.setEnabled(False)
+        self.ui.comboBox.clear()
+        self.ui.comboBox_2.setCurrentIndex(0)
+        
     def displayAbout(self):
         print('about')
         self.about = About(self)
@@ -86,7 +103,12 @@ class MainWindow(QMainWindow):
         self.tracks[-1].show()
     
     def on_comboBox_currentIndexChanged(self, index):
+        print('index changed to ',index)
+        if (index < 0):
+            return
         self.cur_track = index
+        self.reset_btns()
+        self.update_btns()
 
     def on_comboBox_2_currentIndexChanged(self, index):
         self.num_notes = index + 1
@@ -141,11 +163,11 @@ class MainWindow(QMainWindow):
 
             else:
                 if (btn == self.ui.note1):
-                    to_app = self.model_notes[0]
+                    to_app = self.model_notes[self.cur_track][0]
                 elif (btn == self.ui.note2):
-                    to_app = self.model_notes[1]
+                    to_app = self.model_notes[self.cur_track][1]
                 elif (btn == self.ui.note3):
-                    to_app = self.model_notes[2]
+                    to_app = self.model_notes[self.cur_track][2]
             
             #Assumes all quarter notes --> magic number is 4
             cur_track_noteCount = len(self.s[self.cur_track].flat.notes)
@@ -167,8 +189,12 @@ class MainWindow(QMainWindow):
     def playButton_clicked(self):
         print('play')
 
-        self.s.write('midi',temp_midi)
-        mixer.music.load(temp_midi)
+        
+        temp_mid_path = str( self.rootfp.joinpath('mid', TEMP_MIDI))
+        temp_stream = self.get_stream()
+        temp_stream.write('midi',temp_mid_path)
+        mixer.music.load(temp_mid_path)
+
         mixer.music.play(0)
         #thread = threading.Thread(target=self.updateSlider(), args=())
         #thread.daemon = True
@@ -183,12 +209,13 @@ class MainWindow(QMainWindow):
         print('update_track')
         #self.s = converter.parse("tinyNotation: d'8 f g a b2 c'4 C c c c1")
         #self.s.write('lily.png', '../img/notes')
+        temp_stream = self.get_stream()
 
         self.s.show('text')
-        pianoroll = graph.plot.HorizontalBarPitchSpaceOffset(self.s, colorBackgroundFigure='black')
+        pianoroll = graph.plot.HorizontalBarPitchSpaceOffset(temp_stream)
         pianoroll.figureSize = (2,2)
-        pianoroll.colorBackgroundFigure = '#000000'
         pianoroll.colorBackgroundData = '#000000'
+        pianoroll.colorBackgroundFigure = '#000000'
         pianoroll.colorGrid = '#222211'
         pianoroll.alpha = 1.0
         pianoroll.colors = ['Cyan', '#fc900a', 'yellow', '#abfd00', '#fc0aab', \
@@ -199,9 +226,9 @@ class MainWindow(QMainWindow):
         pianoroll.barSpace = 32
         pianoroll.hideLeftBottomSpines = True
         pianoroll.run()
-        pianoroll.write('../img/notes.png')
+        pianoroll.write(self.rootfp.joinpath('img', 'notes.png'))
         
-        p = QPixmap('../img/notes.png')
+        p = QPixmap(str(self.rootfp.joinpath('img', 'notes.png')))
         self.ui.label.setPixmap(p)
 
     def update_btns(self, change_text=True):
@@ -217,13 +244,13 @@ class MainWindow(QMainWindow):
                 base_notes = cur_track_notes[-1].pitch.midi
             elif (isinstance(self.tracks[self.cur_track].model, Sec_markov)):
                 base_notes = [cur_track_notes[len(cur_track_notes) - 2].pitch.midi, cur_track_notes[-1].pitch.midi]
-            self.model_notes = num_to_note(self.tracks[self.cur_track].model.getBestThree(base_notes))
+            self.model_notes[self.cur_track] = num_to_note(self.tracks[self.cur_track].model.getBestThree(base_notes))
             
             if (change_text):
                 for i in range(len(suggestion_btns)):
-                    if (i < len(self.model_notes)):
+                    if (i < len(self.model_notes[self.cur_track])):
                         suggestion_btns[i].setEnabled(True)
-                        suggestion_btns[i].setText(self.model_notes[i].nameWithOctave)
+                        suggestion_btns[i].setText(self.model_notes[self.cur_track][i].nameWithOctave)
                     else:
                         suggestion_btns[i].setEnabled(False)
                         suggestion_btns[i].setText('Possible Note ' + str(i+1))
@@ -232,11 +259,35 @@ class MainWindow(QMainWindow):
         self.ui.comboBox.setEnabled(True)
         self.ui.random_note.setEnabled(True)
         self.ui.custom_btn.setEnabled(True)
-        self.ui.comboBox.addItem(str(len(self.tracks)))
-        self.ui.comboBox.setCurrentIndex(len(self.tracks) - 1)
         self.s.insert(0, stream.Part())
         self.s[-1].append(self.tracks[-1].instrument)
-        self.update_btns()
+        self.model_notes.append([])
+        
+        self.ui.comboBox.addItem(str(len(self.tracks)))
+        self.ui.comboBox.setCurrentIndex(len(self.tracks) - 1)
+        
+        self.reset_btns()
+
+    def reset_btns(self):
+        suggestion_btns = [self.ui.note1, self.ui.note2, self.ui.note3]
+        for i in range(len(suggestion_btns)):
+            suggestion_btns[i].setEnabled(False)
+            suggestion_btns[i].setText('Possible Note ' + str(i+1))
+    
+    def init_variables(self):
+        self.s = stream.Score()
+        self.tracks = []
+        self.model_notes = []
+        self.cur_track = 0
+        self.num_notes = 1
+        self.loaded_stream = None
+
+    def get_stream(self):
+        ret = stream.Stream()
+        ret.insert(0, self.s)
+        if (self.loaded_stream is not None):
+            ret.insert(0, self.loaded_stream)
+        return ret
 
 def num_to_note(num_list):
     ret = []
@@ -244,3 +295,5 @@ def num_to_note(num_list):
         n = note.Note(elem)
         ret.append(n)
     return ret
+
+

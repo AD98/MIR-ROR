@@ -10,6 +10,7 @@ __pycache__/
 
 # user generated note pictures
 img/notes.png
+img/notes
 
 # temp files
 *.swp

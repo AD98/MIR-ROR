@@ -1,10 +1,13 @@
 from PyQt5.QtWidgets import QDialog, QInputDialog, QFileDialog
+from music21 import *
+
+import sys
+
 from add_track_ui import *
 from dialog import *
-from music21 import *
 from models.markov_class import *
 from models.lz_class import *
-import sys
+from utils import *
 
 def get_data(fname):
     s = converter.parse(fname)
@@ -44,7 +47,8 @@ class Add_track(QDialog):
 
         if (self.fname is None):
             self.error_msg()
-            self.fname = 'test.mid'
+            self.fname = getSourceFilePath().joinpath('mid', 'test.mid')
+
 
         # self.fname = 'test.mid'
         self.instrument = instrument.fromString(str(self.ui.comboBox_2.currentText()))
