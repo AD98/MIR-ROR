@@ -10,6 +10,12 @@
     <height>300</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>Segoe UI</family>
+    <pointsize>12</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
@@ -34,12 +40,12 @@
     <rect>
      <x>20</x>
      <y>80</y>
-     <width>287</width>
-     <height>101</height>
+     <width>351</width>
+     <height>184</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout">
-    <item row="0" column="0">
+    <item row="1" column="0">
      <widget class="QLabel" name="label">
       <property name="text">
        <string>Choose MIDI:</string>
@@ -47,6 +53,20 @@
      </widget>
     </item>
     <item row="1" column="1">
+     <widget class="QPushButton" name="pushButton">
+      <property name="text">
+       <string>Browse</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Model Type:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
      <widget class="QComboBox" name="comboBox">
       <item>
        <property name="text">
@@ -65,7 +85,14 @@
       </item>
      </widget>
     </item>
-    <item row="2" column="1">
+    <item row="4" column="0">
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string>Instrument:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
      <widget class="QComboBox" name="comboBox_2">
       <item>
        <property name="text">
@@ -94,25 +121,35 @@
       </item>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_2">
+    <item row="0" column="1">
+     <widget class="QLabel" name="file_label">
       <property name="text">
-       <string>Model Type:</string>
+       <string>No file selected</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
       </property>
      </widget>
     </item>
     <item row="2" column="0">
-     <widget class="QLabel" name="label_3">
+     <widget class="QLabel" name="cbbox3label">
       <property name="text">
-       <string>Instrument:</string>
+       <string>Track Type:</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QPushButton" name="pushButton">
-      <property name="text">
-       <string>Browse</string>
-      </property>
+    <item row="2" column="1">
+     <widget class="QComboBox" name="comboBox_3">
+      <item>
+       <property name="text">
+        <string>Melody</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Chords</string>
+       </property>
+      </item>
      </widget>
     </item>
    </layout>
@@ -127,20 +164,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Choose Options for New Track</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="file_label">
-   <property name="geometry">
-    <rect>
-     <x>160</x>
-     <y>60</y>
-     <width>201</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>No file selected</string>
+    <string>Choose Options for New Track:</string>
    </property>
   </widget>
  </widget>
