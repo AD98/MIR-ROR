@@ -122,33 +122,37 @@ class MainWindow(QMainWindow):
         self.num_notes = index + 1
 
     def on_note1_clicked(self):
-        mod = QApplication.keyboardModifiers()
-
-        if mod == QtCore.Qt.ShiftModifier:
-            print('shift clicked')
-
+        if QApplication.keyboardModifiers() == QtCore.Qt.ShiftModifier:
+            self.play_note_from_text(self.ui.note1.text())
         else:
             self.add_note(self.ui.note1)
+    
     def on_note2_clicked(self):
-        mod = QApplication.keyboardModifiers()
-
-        if mod == QtCore.Qt.ShiftModifier:
-            print('shift clicked')
-
+        if QApplication.keyboardModifiers() == QtCore.Qt.ShiftModifier:
+            self.play_note_from_text(self.ui.note2.text())
         else:
             self.add_note(self.ui.note2)
+    
     def on_note3_clicked(self):
-        mod = QApplication.keyboardModifiers()
-
-        if mod == QtCore.Qt.ShiftModifier:
-            print('shift clicked')
-            
+        if QApplication.keyboardModifiers() == QtCore.Qt.ShiftModifier:
+            self.play_note_from_text(self.ui.note3.text())
         else:
             self.add_note(self.ui.note3)
+    
     def on_random_note_clicked(self):
-        self.add_note(self.ui.random_note)
+        if QApplication.keyboardModifiers() == QtCore.Qt.ShiftModifier:
+            self.play_note_from_text(self.ui.random_note.text())
+        else:
+            self.add_note(self.ui.random_note)
+    
     def on_custom_btn_clicked(self):
-        self.add_note(self.ui.custom_btn)
+        if QApplication.keyboardModifiers() == QtCore.Qt.ShiftModifier:
+            text = self.ui.custom_note.text()
+            if (self.try_catch(text) is None):
+                return
+            self.play_note_from_text(text)
+        else:
+            self.add_note(self.ui.custom_btn)
 
     def add_note(self, btn):
         print('add_note ',btn)
@@ -161,16 +165,9 @@ class MainWindow(QMainWindow):
                 else:
                     to_app = note.Note(np.random.randint(0, 128))
             elif (btn == self.ui.custom_btn):
-                # make a try-catch here
-                try:
-                    text = self.ui.custom_note.text()
-                    if (self.tracks[self.cur_track].chords):
-                        to_app = roman.RomanNumeral(text, self.tracks[self.cur_track].key)
-                    else:
-                        to_app = note.Note(text)
-                except pitch.AccidentalException:
-                    self.error_msg()
-                    print('exception found')
+                text = self.ui.custom_note.text()
+                to_app = self.try_catch(text)
+                if (to_app is None):
                     return
             else:
                 if (btn == self.ui.note1):
@@ -199,7 +196,6 @@ class MainWindow(QMainWindow):
 
     def playButton_clicked(self):
         print('play')
-
         
         temp_mid_path = str( self.rootfp.joinpath('mid', TEMP_MIDI))
         temp_stream = self.get_stream()
@@ -214,7 +210,6 @@ class MainWindow(QMainWindow):
     def pauseButton_clicked(self):
         print('stopping music')
         mixer.music.stop()
-
 
     def update_track(self):
         print('update_track')
@@ -321,6 +316,31 @@ class MainWindow(QMainWindow):
         rand_rn = num_to_chord[num]
         return roman.RomanNumeral(rand_rn, self.tracks[self.cur_track].key)
 
+    def play_note_from_text(self, n):
+        to_play = None
+        if (self.tracks[self.cur_track].chords):
+            to_play = roman.RomanNumeral(n, self.tracks[self.cur_track].key)
+        else:
+            to_play = note.Note(n)
+
+        temp_mid_path = str( self.rootfp.joinpath('mid', TEMP_MIDI))
+        to_play.write('midi',temp_mid_path)
+        mixer.music.load(temp_mid_path)
+        mixer.music.play(0)
+
+    def try_catch(self,text):
+        to_app = None
+        try:
+            if (self.tracks[self.cur_track].chords):
+                to_app = roman.RomanNumeral(text, self.tracks[self.cur_track].key)
+            else:
+                to_app = note.Note(text)
+            return to_app
+        except pitch.AccidentalException:
+            self.error_msg()
+            print('exception found')
+            return None
+
 
 def num_to_note(num_list, chords, cur_track_obj):
     ret = []
@@ -332,3 +352,4 @@ def num_to_note(num_list, chords, cur_track_obj):
             n = note.Note(elem)
         ret.append(n)
     return ret
+
