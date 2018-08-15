@@ -145,22 +145,25 @@ class MainWindow(QMainWindow):
     def add_note(self, btn):
         print('add_note ',btn)
 
-
-
         for i in range(self.num_notes):
             to_app = None
             if (btn == self.ui.random_note):
-                to_app = note.Note(np.random.randint(0,128))
+                if (self.tracks[self.cur_track].chords):
+                    to_app = self.get_rn_from_num(np.random.randint(0,14))
+                else:
+                    to_app = note.Note(np.random.randint(0, 128))
             elif (btn == self.ui.custom_btn):
                 # make a try-catch here
                 try:
-                    to_app = note.Note(self.ui.custom_note.text())
+                    text = self.ui.custom_note.text()
+                    if (self.tracks[self.cur_track].chords):
+                        to_app = roman.RomanNumeral(text, self.tracks[self.cur_track].key)
+                    else:
+                        to_app = note.Note(text)
                 except pitch.AccidentalException:
                     self.error_msg()
                     print('exception found')
                     return
-
-
             else:
                 if (btn == self.ui.note1):
                     to_app = self.model_notes[self.cur_track][0]
@@ -226,7 +229,7 @@ class MainWindow(QMainWindow):
         pianoroll.barSpace = 32
         pianoroll.hideLeftBottomSpines = True
         pianoroll.run()
-        pianoroll.write(self.rootfp.joinpath('img', 'notes.png'))
+        pianoroll.write(str(self.rootfp.joinpath('img', 'notes.png')))
         
         p = QPixmap(str(self.rootfp.joinpath('img', 'notes.png')))
         self.ui.label.setPixmap(p)
@@ -240,17 +243,29 @@ class MainWindow(QMainWindow):
                 (len(cur_track_notes) >= self.tracks[self.cur_track].min_notes)):
             
             base_notes = None
-            if (isinstance(self.tracks[self.cur_track].model, First_markov)):
-                base_notes = cur_track_notes[-1].pitch.midi
-            elif (isinstance(self.tracks[self.cur_track].model, Sec_markov)):
-                base_notes = [cur_track_notes[len(cur_track_notes) - 2].pitch.midi, cur_track_notes[-1].pitch.midi]
-            self.model_notes[self.cur_track] = num_to_note(self.tracks[self.cur_track].model.getBestThree(base_notes))
+            cur_track_obj = self.tracks[self.cur_track]
+
+            if (isinstance(cur_track_obj.model, First_markov)):
+                if (cur_track_obj.chords):
+                    base_notes = chord_to_num[cur_track_notes[-1].figure]
+                else:
+                    base_notes = cur_track_notes[-1].pitch.midi
+            elif (isinstance(cur_track_obj.model, Sec_markov)):
+                if (cur_track_obj.chords):
+                    base_notes = [chord_to_num[cur_track_notes[len(cur_track_notes) - 2].figure], chord_to_num[cur_track_notes[-1].figure]]
+                else:
+                    base_notes = [cur_track_notes[len(cur_track_notes) - 2].pitch.midi, cur_track_notes[-1].pitch.midi]
+
+            self.model_notes[self.cur_track] = num_to_note(cur_track_obj.model.getBestThree(base_notes), cur_track_obj.chords, cur_track_obj)
             
             if (change_text):
                 for i in range(len(suggestion_btns)):
                     if (i < len(self.model_notes[self.cur_track])):
                         suggestion_btns[i].setEnabled(True)
-                        suggestion_btns[i].setText(self.model_notes[self.cur_track][i].nameWithOctave)
+                        if cur_track_obj.chords:
+                            suggestion_btns[i].setText(self.model_notes[self.cur_track][i].figure)
+                        else:
+                            suggestion_btns[i].setText(self.model_notes[self.cur_track][i].nameWithOctave)
                     else:
                         suggestion_btns[i].setEnabled(False)
                         suggestion_btns[i].setText('Possible Note ' + str(i+1))
@@ -288,12 +303,19 @@ class MainWindow(QMainWindow):
         if (self.loaded_stream is not None):
             ret.insert(0, self.loaded_stream)
         return ret
+    
+    def get_rn_from_num(self, num):
+        rand_rn = num_to_chord[num]
+        return roman.RomanNumeral(rand_rn, self.tracks[self.cur_track].key)
 
-def num_to_note(num_list):
+
+def num_to_note(num_list, chords, cur_track_obj):
     ret = []
     for elem in num_list:
-        n = note.Note(elem)
+        n = None
+        if (chords):
+            n = roman.RomanNumeral(num_to_chord[elem],cur_track_obj.key)
+        else:
+            n = note.Note(elem)
         ret.append(n)
     return ret
-
-
