@@ -11,22 +11,26 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(521, 121)
+        Dialog.resize(573, 153)
         self.label = QtWidgets.QLabel(Dialog)
-        self.label.setGeometry(QtCore.QRect(20, 20, 481, 61))
+        self.label.setGeometry(QtCore.QRect(130, 20, 411, 81))
         self.label.setWordWrap(True)
         self.label.setOpenExternalLinks(True)
         self.label.setObjectName("label")
         self.buttonBox = QtWidgets.QDialogButtonBox(Dialog)
-        self.buttonBox.setGeometry(QtCore.QRect(20, 91, 481, 21))
+        self.buttonBox.setGeometry(QtCore.QRect(30, 101, 511, 41))
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
+        self.label_2 = QtWidgets.QLabel(Dialog)
+        self.label_2.setGeometry(QtCore.QRect(40, 30, 71, 61))
+        self.label_2.setText("")
+        self.label_2.setPixmap(QtGui.QPixmap("../img/warning.png"))
+        self.label_2.setObjectName("label_2")
 
         self.retranslateUi(Dialog)
         self.buttonBox.accepted.connect(Dialog.accept)
-        self.buttonBox.rejected.connect(Dialog.reject)
-        #QtCore.QMetaObject.connectSlotsByName(Dialog)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
