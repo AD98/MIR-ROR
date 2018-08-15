@@ -1,15 +1,21 @@
+# QT 
 from PyQt5.QtWidgets import QMainWindow, QLabel
 from PyQt5.QtGui import QPixmap
-from mainwindow_ui import *
-from add_track import *
-from about import *
-from dialog2 import *
+
+# External
 from music21 import *
 from pygame import mixer
 import pygame
 import numpy as np
 
-temp_midi = 'temp.mid' # holds data about current track
+# Internal
+from mainwindow_ui import *
+from add_track import *
+from about import *
+from dialog2 import *
+from utils import *
+
+TEMP_MIDI = 'temp.mid' # holds data about current track
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -53,6 +59,8 @@ class MainWindow(QMainWindow):
             environment.set('graphicsPath', '/usr/bin/true')
         else:
             environment.set('graphicsPath', '/bin/true')
+
+        self.rootfp = getSourceFilePath()
 
 
     def load_file_clicked(self):
@@ -146,8 +154,10 @@ class MainWindow(QMainWindow):
 
     def playButton_clicked(self):
         print('play')
-        self.s.write('midi',temp_midi)
-        mixer.music.load(temp_midi)
+        
+        temp_mid_path = str( self.rootfp.joinpath('img', TEMP_MIDI))
+        self.s.write('midi', temp_mid_path)
+        mixer.music.load(temp_mid_path)
         mixer.music.play(0)
         #thread = threading.Thread(target=self.updateSlider(), args=())
         #thread.daemon = True
@@ -164,10 +174,10 @@ class MainWindow(QMainWindow):
         #self.s.write('lily.png', '../img/notes')
 
         self.s.show('text')
-        pianoroll = graph.plot.HorizontalBarPitchSpaceOffset(self.s, colorBackgroundFigure='black')
+        pianoroll = graph.plot.HorizontalBarPitchSpaceOffset(self.s)
         pianoroll.figureSize = (2,2)
-        pianoroll.colorBackgroundFigure = '#000000'
         pianoroll.colorBackgroundData = '#000000'
+        pianoroll.colorBackgroundFigure = '#000000'
         pianoroll.colorGrid = '#222211'
         pianoroll.alpha = 1.0
         pianoroll.colors = ['Cyan', '#fc900a', 'yellow', '#abfd00', '#fc0aab', \
@@ -178,9 +188,9 @@ class MainWindow(QMainWindow):
         pianoroll.barSpace = 32
         pianoroll.hideLeftBottomSpines = True
         pianoroll.run()
-        pianoroll.write('../img/notes.png')
+        pianoroll.write(self.rootfp.joinpath('img', 'notes.png'))
         
-        p = QPixmap('../img/notes.png')
+        p = QPixmap(str(self.rootfp.joinpath('img', 'notes.png')))
         self.ui.label.setPixmap(p)
 
     def update_btns(self, change_text=True):
@@ -223,3 +233,5 @@ def num_to_note(num_list):
         n = note.Note(elem)
         ret.append(n)
     return ret
+
+
