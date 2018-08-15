@@ -32,6 +32,7 @@ class MainWindow(QMainWindow):
 
         #toolbar buttons
         self.ui.actionLoad_File.triggered.connect(self.load_file_clicked)
+        self.ui.actionOptions.triggered.connect(self.save_file_clicked)
         self.ui.actionAbout.triggered.connect(self.displayAbout)
         self.ui.actionNew.triggered.connect(self.new_clicked)
 
@@ -55,7 +56,7 @@ class MainWindow(QMainWindow):
 
 
     def load_file_clicked(self):
-        print('browse')
+        print('load')
         fname, ok = QFileDialog.getOpenFileName(self, 'Open File','/home', 'MIDI files (*.mid)')
         if ok:
             self.fname = fname
@@ -63,6 +64,11 @@ class MainWindow(QMainWindow):
         self.s = converter.parse(fname)
         self.update_track()
         
+    def save_file_clicked(self):
+        print('save')
+        fname, ok = QFileDialog.getSaveFileName(self, 'Save File','/home', 'MIDI files (*.mid)')
+        self.s.write('midi', fname)
+
     def new_clicked(self):
         print('new!')
         self.s = stream.Stream()
@@ -73,7 +79,6 @@ class MainWindow(QMainWindow):
         print('about')
         self.about = About(self)
         self.about.show()
-
 
     def on_add_track_btn_clicked(self):
         print('add_track')
