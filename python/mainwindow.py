@@ -1,5 +1,5 @@
 # QT 
-from PyQt5.QtWidgets import QMainWindow, QLabel
+from PyQt5.QtWidgets import QMainWindow, QLabel, QApplication
 from PyQt5.QtGui import QPixmap
 
 # External
@@ -114,11 +114,29 @@ class MainWindow(QMainWindow):
         self.num_notes = index + 1
 
     def on_note1_clicked(self):
-        self.add_note(self.ui.note1)
+        mod = QApplication.keyboardModifiers()
+
+        if mod == QtCore.Qt.ShiftModifier:
+            print('shift clicked')
+
+        else:
+            self.add_note(self.ui.note1)
     def on_note2_clicked(self):
-        self.add_note(self.ui.note2)
+        mod = QApplication.keyboardModifiers()
+
+        if mod == QtCore.Qt.ShiftModifier:
+            print('shift clicked')
+
+        else:
+            self.add_note(self.ui.note2)
     def on_note3_clicked(self):
-        self.add_note(self.ui.note3)
+        mod = QApplication.keyboardModifiers()
+
+        if mod == QtCore.Qt.ShiftModifier:
+            print('shift clicked')
+            
+        else:
+            self.add_note(self.ui.note3)
     def on_random_note_clicked(self):
         self.add_note(self.ui.random_note)
     def on_custom_btn_clicked(self):
@@ -126,7 +144,9 @@ class MainWindow(QMainWindow):
 
     def add_note(self, btn):
         print('add_note ',btn)
-       
+
+
+
         for i in range(self.num_notes):
             to_app = None
             if (btn == self.ui.random_note):
@@ -168,6 +188,7 @@ class MainWindow(QMainWindow):
 
     def playButton_clicked(self):
         print('play')
+
         
         temp_mid_path = str( self.rootfp.joinpath('mid', TEMP_MIDI))
         temp_stream = self.get_stream()

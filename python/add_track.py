@@ -9,7 +9,24 @@ from models.markov_class import *
 from models.lz_class import *
 from utils import *
 
-def get_data(fname:
+chord_dict = { 
+        'I':    1, 
+        'II':   2, 
+        'III':  3,
+        'IV':   4,
+        'V':    5, 
+        'VI':   6,
+        'VII':  7,
+        'i':    9,
+        'ii':   10,
+        'iii':  11,
+        'iv':   12,
+        'v':    13,
+        'vi':   14,
+        'vii':  15  }
+
+
+def get_data(fname):
     s = converter.parse(fname)
     self.key = s.analyze('key')
     ret = []
