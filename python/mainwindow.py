@@ -16,6 +16,7 @@ from dialog2 import *
 from utils import *
 
 TEMP_MIDI = 'temp.mid' # holds data about current track
+LILY_ENABLED = False
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -40,6 +41,9 @@ class MainWindow(QMainWindow):
         self.ui.actionNew.triggered.connect(self.new_clicked)
 
         self.ui.comboBox.currentIndexChanged.connect(self.on_comboBox_currentIndexChanged)
+
+        #view
+        self.ui.tabWidget.currentChanged.connect(self.on_change_tab)
 
         # audio backend 
         pygame.init()
@@ -96,6 +100,10 @@ class MainWindow(QMainWindow):
         print('about')
         self.about = About(self)
         self.about.show()
+
+    def on_change_tab(self):
+        print('tab change %i' % self.ui.tabWidget.currentIndex())
+
 
     def on_add_track_btn_clicked(self):
         print('add_track')
@@ -210,8 +218,13 @@ class MainWindow(QMainWindow):
 
     def update_track(self):
         print('update_track')
+        
         #self.s = converter.parse("tinyNotation: d'8 f g a b2 c'4 C c c c1")
-        #self.s.write('lily.png', '../img/notes')
+        if LILY_ENABLED is True:
+            self.s.write('lily.png', self.rootfp.joinpath('img', 'notes.lily'))
+            pp = QPixmap(str(self.rootfp.joinpath('img', 'notes.lily.png')))
+            self.ui.label_4.setPixmap(pp)
+
         temp_stream = self.get_stream()
 
         self.s.show('text')
