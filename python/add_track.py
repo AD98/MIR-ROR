@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QDialog, QInputDialog, QFileDialog
 from add_track_ui import *
+from dialog import *
 from music21 import *
 from models.markov_class import *
 from models.lz_class import *
@@ -38,20 +39,28 @@ class Add_track(QDialog):
 
     def on_buttonBox_accepted(self):
         print('accepted')
-        model_num = self.ui.comboBox.currentIndex()
+        model_str = str(self.ui.comboBox.currentText())
 
-        ###### remove this line when not testing
-        # self.fname = '/Users/anshuldoshi/Downloads/uptown_funk.mid'
 
+        if (self.fname is None):
+            self.error_msg()
+            self.fname = 'test.mid'
+
+        # self.fname = 'test.mid'
+        self.instrument = instrument.fromString(str(self.ui.comboBox_2.currentText()))
         data = get_data(self.fname)
-        if (model_num == 0):
+        if (model_str == '1st Order Markov Chain'):
             self.model = First_markov(data)
             self.min_notes = 1
-        elif (model_num == 1):
+        elif (model_str == '2nd Order Markov Chain'):
             self.model = Sec_markov(data)
             self.min_notes = 2
-        elif (model_num == 2):
+        elif (model_str == 'Lempel ziv'):
             self.model = Lz(data)
 
         self.main_win.after_add_track()
         
+    def error_msg(self):
+        print('error msg')
+        self.error = Dialog(self)
+        self.error.show()

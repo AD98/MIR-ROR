@@ -20,4 +20,7 @@ HEADERS  += mainwindow.h \
     add_track.h
 
 FORMS    += mainwindow.ui \
-    add_track.ui
+    add_track.ui \
+    about.ui \
+    dialog.ui \
+    dialog2.ui
