@@ -32,6 +32,7 @@ class MainWindow(QMainWindow):
 
         #toolbar buttons
         self.ui.actionLoad_File.triggered.connect(self.load_file_clicked)
+        self.ui.actionOptions.triggered.connect(self.save_file_clicked)
         self.ui.actionAbout.triggered.connect(self.displayAbout)
         self.ui.actionNew.triggered.connect(self.new_clicked)
 
@@ -55,7 +56,7 @@ class MainWindow(QMainWindow):
 
 
     def load_file_clicked(self):
-        print('browse')
+        print('load')
         fname, ok = QFileDialog.getOpenFileName(self, 'Open File','/home', 'MIDI files (*.mid)')
         if ok:
             self.fname = fname
@@ -63,6 +64,11 @@ class MainWindow(QMainWindow):
         self.s = converter.parse(fname)
         self.update_track()
         
+    def save_file_clicked(self):
+        print('save')
+        fname, ok = QFileDialog.getSaveFileName(self, 'Save File','/home', 'MIDI files (*.mid)')
+        self.s.write('midi', fname)
+
     def new_clicked(self):
         print('new!')
         self.s = stream.Stream()
@@ -73,7 +79,6 @@ class MainWindow(QMainWindow):
         print('about')
         self.about = About(self)
         self.about.show()
-
 
     def on_add_track_btn_clicked(self):
         print('add_track')
@@ -122,8 +127,10 @@ class MainWindow(QMainWindow):
                 elif (btn == self.ui.note3):
                     to_app = self.model_notes[2]
             
-            if (len(self.s[self.cur_track].flat.notes) % 4 == 0):
-                self.s[self.cur_track].append(stream.Measure())
+            #Assumes all quarter notes --> magic number is 4
+            cur_track_noteCount = len(self.s[self.cur_track].flat.notes)
+            if (cur_track_noteCount % 4 == 0):
+                self.s[self.cur_track].append(stream.Measure(number=cur_track_noteCount / 4))
 
             self.s[self.cur_track][-1].append(to_app) 
             self.update_btns(False)
@@ -155,17 +162,21 @@ class MainWindow(QMainWindow):
         print('update_track')
         #self.s = converter.parse("tinyNotation: d'8 f g a b2 c'4 C c c c1")
         #self.s.write('lily.png', '../img/notes')
+
         self.s.show('text')
         pianoroll = graph.plot.HorizontalBarPitchSpaceOffset(self.s, colorBackgroundFigure='black')
-        pianoroll.figureSize = (3,2)
+        pianoroll.figureSize = (2,2)
         pianoroll.colorBackgroundFigure = '#000000'
         pianoroll.colorBackgroundData = '#000000'
-        pianoroll.colorGrid = '#111111'
+        pianoroll.colorGrid = '#222211'
         pianoroll.alpha = 1.0
-        pianoroll.colors = ['Cyan', 'pink', 'yellow']
+        pianoroll.colors = ['Cyan', '#fc900a', 'yellow', '#abfd00', '#fc0aab', \
+                '#fb00ab', '#ef1200', '#bb0222', '#cb10de', '#44dd77', '#4444ff', \
+                '#0fbcff' ]
         pianoroll.doneAction = None
         pianoroll.title = None
         pianoroll.barSpace = 32
+        pianoroll.hideLeftBottomSpines = True
         pianoroll.run()
         pianoroll.write('../img/notes.png')
         
@@ -202,7 +213,7 @@ class MainWindow(QMainWindow):
         self.ui.custom_btn.setEnabled(True)
         self.ui.comboBox.addItem(str(len(self.tracks)))
         self.ui.comboBox.setCurrentIndex(len(self.tracks) - 1)
-        self.s.append(stream.Part())
+        self.s.insert(0, stream.Part())
         self.s[-1].append(self.tracks[-1].instrument)
         self.update_btns()
 
