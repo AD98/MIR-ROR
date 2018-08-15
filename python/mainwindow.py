@@ -127,8 +127,10 @@ class MainWindow(QMainWindow):
                 elif (btn == self.ui.note3):
                     to_app = self.model_notes[2]
             
-            if (len(self.s[self.cur_track].flat.notes) % 4 == 0):
-                self.s[self.cur_track].append(stream.Measure())
+            #Assumes all quarter notes --> magic number is 4
+            cur_track_noteCount = len(self.s[self.cur_track].flat.notes)
+            if (cur_track_noteCount % 4 == 0):
+                self.s[self.cur_track].append(stream.Measure(number=cur_track_noteCount / 4))
 
             self.s[self.cur_track][-1].append(to_app) 
             self.update_btns(False)
@@ -211,7 +213,7 @@ class MainWindow(QMainWindow):
         self.ui.custom_btn.setEnabled(True)
         self.ui.comboBox.addItem(str(len(self.tracks)))
         self.ui.comboBox.setCurrentIndex(len(self.tracks) - 1)
-        self.s.append(stream.Part())
+        self.s.insert(0, stream.Part())
         self.s[-1].append(self.tracks[-1].instrument)
         self.update_btns()
 
