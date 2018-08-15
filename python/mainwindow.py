@@ -94,16 +94,20 @@ class MainWindow(QMainWindow):
         print('update_track')
         #self.s = converter.parse("tinyNotation: d'8 f g a b2 c'4 C c c c1")
         #self.s.write('lily.png', '../img/notes')
+
         pianoroll = graph.plot.HorizontalBarPitchSpaceOffset(self.s, colorBackgroundFigure='black')
-        pianoroll.figureSize = (3,2)
+        pianoroll.figureSize = (2,2)
         pianoroll.colorBackgroundFigure = '#000000'
         pianoroll.colorBackgroundData = '#000000'
-        pianoroll.colorGrid = '#111111'
+        pianoroll.colorGrid = '#222211'
         pianoroll.alpha = 1.0
-        pianoroll.colors = ['Cyan', 'pink', 'yellow']
+        pianoroll.colors = ['Cyan', '#fc900a', 'yellow', '#abfd00', '#fc0aab', \
+                '#fb00ab', '#ef1200', '#bb0222', '#cb10de', '#44dd77', '#4444ff', \
+                '#0fbcff' ]
         pianoroll.doneAction = None
         pianoroll.title = None
         pianoroll.barSpace = 32
+        pianoroll.hideLeftBottomSpines = True
         pianoroll.run()
         pianoroll.write('../img/notes.png')
         
