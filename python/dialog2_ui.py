@@ -34,5 +34,4 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.label.setText(_translate("Dialog", "Please enter your custom note in the correct format. Notes are most often created by passing in a note name (C, D, E, F, G, A, B), an optional accidental (one or more “#”s or “-“s, where “-” means flat), and an optional octave number. Chords are represented by any of the first seven Roman Numerals. See http://web.mit.edu/music21/doc/moduleReference/modulePitch.html#pitch for more details."))
-
+        self.label.setText(_translate("Dialog", "Please enter your custom note/chord in the correct format. Notes are most often created by passing in a note name (C, D, E, F, G, A, B), an optional accidental (one or more “#”s or “-“s, where “-” means flat), and an optional octave number. Chords are represented by any of the first seven Roman Numerals.. See <a href=\"http://web.mit.edu/music21/doc/moduleReference/modulePitch.html#pitch\">here</a> for more details on notes and <a href=\"http://web.mit.edu/music21/doc/usersGuide/usersGuide_23_romanNumerals.html\">here</a> for more details on chords."))
