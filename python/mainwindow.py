@@ -48,21 +48,13 @@ class MainWindow(QMainWindow):
         self.ui.playButton.clicked.connect(self.playButton_clicked)
         self.ui.pauseButton.clicked.connect(self.pauseButton_clicked)        
 
-        #HACK -- suppress music21 images by feeding nonexistant path
-        platform = common.getPlatform() 
-        if platform == 'win':
-            environment.set('graphicsPath', 'C:/')
-        elif platform == 'darwin': 
-            environment.set('graphicsPath', '/usr/bin/true')
-        else:
-            environment.set('graphicsPath', '/bin/true')
-
         self.rootfp = getSourceFilePath()
 
-
+        # trackview graph settings
+    
     def load_file_clicked(self):
         print('load button clicked')
-        fname, ok = QFileDialog.getOpenFileName(self, 'Open File','/home', 'MIDI files (*.mid)')
+        fname, ok = QFileDialog.getOpenFileName(self, 'Open File','./', 'MIDI files (*.mid)')
         if ok:
             self.load_file(fname)
     
@@ -76,7 +68,7 @@ class MainWindow(QMainWindow):
         
     def save_file_clicked(self):
         print('save')
-        fname, ok = QFileDialog.getSaveFileName(self, 'Save File','/home', 'MIDI files (*.mid)')
+        fname, ok = QFileDialog.getSaveFileName(self, 'Save File','./', 'MIDI files (*.mid)')
         if ok:
             temp_stream = self.get_stream()
             temp_stream.write('midi', fname)
@@ -150,7 +142,7 @@ class MainWindow(QMainWindow):
         for i in range(self.num_notes):
             to_app = None
             if (btn == self.ui.random_note):
-                to_app = note.Note(np.random.randint(0,128))
+                to_app = note.Note(np.random.randint(30,60))
             elif (btn == self.ui.custom_btn):
                 # make a try-catch here
                 try:
@@ -209,26 +201,33 @@ class MainWindow(QMainWindow):
         print('update_track')
         #self.s = converter.parse("tinyNotation: d'8 f g a b2 c'4 C c c c1")
         #self.s.write('lily.png', '../img/notes')
-        temp_stream = self.get_stream()
 
-        self.s.show('text')
+        #self.s.show('text')
+        temp_stream = self.get_stream()
         pianoroll = graph.plot.HorizontalBarPitchSpaceOffset(temp_stream)
-        pianoroll.figureSize = (2,2)
+        pianoroll.figureSize = (8,6)
         pianoroll.colorBackgroundData = '#000000'
         pianoroll.colorBackgroundFigure = '#000000'
-        pianoroll.colorGrid = '#222211'
+        pianoroll.colorGrid = '#222222'
         pianoroll.alpha = 1.0
         pianoroll.colors = ['Cyan', '#fc900a', 'yellow', '#abfd00', '#fc0aab', \
                 '#fb00ab', '#ef1200', '#bb0222', '#cb10de', '#44dd77', '#4444ff', \
                 '#0fbcff' ]
         pianoroll.doneAction = None
         pianoroll.title = None
-        pianoroll.barSpace = 32
-        pianoroll.hideLeftBottomSpines = True
-        pianoroll.run()
-        pianoroll.write(self.rootfp.joinpath('img', 'notes.png'))
+        pianoroll.margin = 0
+        pianoroll.tickFontSize = 8
+        #pianoroll.barSpace = 32
+        #pianoroll.hideLeftBottomSpines = True
         
-        p = QPixmap(str(self.rootfp.joinpath('img', 'notes.png')))
+        pianoroll.streamObj.show('text')
+        pianoroll.run()
+        pr_path = self.rootfp.joinpath('img', 'notes.png')
+        pianoroll.subplot.tick_params(axis='x', colors='white')
+        pianoroll.subplot.tick_params(axis='y', colors='white')
+        pianoroll.figure.savefig(pr_path, facecolor='k')
+        
+        p = QPixmap( str(pr_path) )
         self.ui.label.setPixmap(p)
 
     def update_btns(self, change_text=True):
