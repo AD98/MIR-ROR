@@ -338,7 +338,7 @@ class MainWindow(QMainWindow):
             else:
                 to_app = note.Note(text)
             return to_app
-        except (pitch.AccidentalException, roman.RomanException):
+        except (pitch.AccidentalException, roman.RomanException, pitch.PitchException):
             self.error_msg()
             print('exception found')
             return None
