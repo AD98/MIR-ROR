@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '.\cpp\dialog2.ui'
+# Form implementation generated from reading ui file '../cpp/dialog2.ui'
 #
 # Created by: PyQt5 UI code generator 5.11.2
 #
@@ -11,14 +11,14 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(573, 153)
+        Dialog.resize(576, 206)
         self.label = QtWidgets.QLabel(Dialog)
-        self.label.setGeometry(QtCore.QRect(130, 20, 411, 81))
+        self.label.setGeometry(QtCore.QRect(130, 20, 411, 151))
         self.label.setWordWrap(True)
         self.label.setOpenExternalLinks(True)
         self.label.setObjectName("label")
         self.buttonBox = QtWidgets.QDialogButtonBox(Dialog)
-        self.buttonBox.setGeometry(QtCore.QRect(30, 101, 511, 41))
+        self.buttonBox.setGeometry(QtCore.QRect(30, 150, 511, 41))
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
@@ -29,11 +29,10 @@ class Ui_Dialog(object):
         self.label_2.setObjectName("label_2")
 
         self.retranslateUi(Dialog)
-        self.buttonBox.accepted.connect(Dialog.accept)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.label.setText(_translate("Dialog", "Please enter your custom note in the correct format. Notes are most often created by passing in a note name (C, D, E, F, G, A, B), an optional accidental (one or more “#”s or “-“s, where “-” means flat), and an optional octave number. See http://web.mit.edu/music21/doc/moduleReference/modulePitch.html#pitch for more details."))
+        self.label.setText(_translate("Dialog", "Please enter your custom note in the correct format. Notes are most often created by passing in a note name (C, D, E, F, G, A, B), an optional accidental (one or more “#”s or “-“s, where “-” means flat), and an optional octave number. Chords are represented by any of the first seven Roman Numerals. See http://web.mit.edu/music21/doc/moduleReference/modulePitch.html#pitch for more details."))
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>573</width>
-    <height>153</height>
+    <width>576</width>
+    <height>206</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,11 +19,11 @@
      <x>130</x>
      <y>20</y>
      <width>411</width>
-     <height>81</height>
+     <height>151</height>
     </rect>
    </property>
    <property name="text">
-    <string>Please enter your custom note in the correct format. Notes are most often created by passing in a note name (C, D, E, F, G, A, B), an optional accidental (one or more “#”s or “-“s, where “-” means flat), and an optional octave number. See http://web.mit.edu/music21/doc/moduleReference/modulePitch.html#pitch for more details.</string>
+    <string>Please enter your custom note in the correct format. Notes are most often created by passing in a note name (C, D, E, F, G, A, B), an optional accidental (one or more “#”s or “-“s, where “-” means flat), and an optional octave number. Chords are represented by any of the first seven Roman Numerals. See http://web.mit.edu/music21/doc/moduleReference/modulePitch.html#pitch for more details.</string>
    </property>
    <property name="wordWrap">
     <bool>true</bool>
@@ -36,7 +36,7 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>101</y>
+     <y>150</y>
      <width>511</width>
      <height>41</height>
     </rect>

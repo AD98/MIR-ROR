@@ -332,11 +332,21 @@ class MainWindow(QMainWindow):
         to_app = None
         try:
             if (self.tracks[self.cur_track].chords):
+                if text not in chord_to_num:
+                    raise pitch.AccidentalException
                 to_app = roman.RomanNumeral(text, self.tracks[self.cur_track].key)
             else:
                 to_app = note.Note(text)
             return to_app
         except pitch.AccidentalException:
+            self.error_msg()
+            print('exception found')
+            return None
+        except pitch.PitchException:
+            self.error_msg()
+            print('exception found')
+            return None
+        except roman.RomanException:
             self.error_msg()
             print('exception found')
             return None

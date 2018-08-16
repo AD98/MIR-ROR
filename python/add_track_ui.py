@@ -72,7 +72,7 @@ class Ui_Add_track(object):
         self.retranslateUi(Add_track)
         self.buttonBox.accepted.connect(Add_track.accept)
         self.buttonBox.rejected.connect(Add_track.reject)
-        QtCore.QMetaObject.connectSlotsByName(Add_track)
+        #QtCore.QMetaObject.connectSlotsByName(Add_track)
 
     def retranslateUi(self, Add_track):
         _translate = QtCore.QCoreApplication.translate
