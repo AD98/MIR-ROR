@@ -140,10 +140,12 @@ class MainWindow(QMainWindow):
             self.add_note(self.ui.note3)
     
     def on_random_note_clicked(self):
-        if QApplication.keyboardModifiers() == QtCore.Qt.ShiftModifier:
+        '''if QApplication.keyboardModifiers() == QtCore.Qt.ShiftModifier:
             self.play_note_from_text(self.ui.random_note.text())
         else:
-            self.add_note(self.ui.random_note)
+            self.add_note(self.ui.random_note)'''
+
+        self.add_note(self.ui.random_note)
     
     def on_custom_btn_clicked(self):
         if QApplication.keyboardModifiers() == QtCore.Qt.ShiftModifier:
