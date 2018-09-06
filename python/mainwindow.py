@@ -239,7 +239,7 @@ class MainWindow(QMainWindow):
         pr_path = self.rootfp.joinpath('img', 'notes.png')
         pianoroll.subplot.tick_params(axis='x', colors='white')
         pianoroll.subplot.tick_params(axis='y', colors='white')
-        pianoroll.figure.savefig(pr_path, facecolor='k')
+        pianoroll.figure.savefig(str(pr_path), facecolor='k')
         
         p = QPixmap( str(pr_path) )
         self.ui.label.setPixmap(p)
